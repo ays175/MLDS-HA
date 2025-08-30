@@ -62,11 +62,13 @@ class TikTokAnalyticsAgent:
         
         metrics = {}
         
-        # Always load latest summary first
-        summary_file = self.metrics_dir / "latest_metrics_summary.json"
-        if summary_file.exists():
-            with open(summary_file) as f:
-                metrics["summary"] = json.load(f)
+        # Always load latest summary first (prefer tiktok-prefixed)
+        for name in ("latest_metrics_summary_tiktok.json", "latest_metrics_summary.json"):
+            summary_file = self.metrics_dir / name
+            if summary_file.exists():
+                with open(summary_file) as f:
+                    metrics["summary"] = json.load(f)
+                break
         
         # Load detailed metrics (find most recent files)
         metric_types = [
@@ -89,8 +91,13 @@ class TikTokAnalyticsAgent:
     def _find_latest_metric_file(self, metric_type: str) -> Optional[Path]:
         """Find the most recent metric file of given type"""
         
-        pattern = f"{metric_type}_*.json"
-        files = list(self.metrics_dir.glob(pattern))
+        # Prefer tiktok-prefixed filenames, fall back to legacy
+        files = []
+        for pattern in (f"tiktok_{metric_type}_*.json", f"{metric_type}_*.json"):
+            matches = list(self.metrics_dir.glob(pattern))
+            if matches:
+                files = matches
+                break
         
         if files:
             # Sort by modification time, return newest

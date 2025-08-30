@@ -3,3 +3,5 @@ WEAVIATE/
 Parsers/
 data/processed/
 data/raw/
+insights/
+metrics/

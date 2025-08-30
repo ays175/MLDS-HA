@@ -229,6 +229,17 @@ def merge_tiktok_entities_safe(client, entities, entity_uuids):
 def ingest_tiktok_posts(client, df, entity_uuids, mode="merge"):
     """Ingest TikTok posts with relationships"""
     
+    def _safe_float(value, default=0.0):
+        """Convert value to float, coerce NaN/inf/invalid to default."""
+        try:
+            v = float(value)
+            # Guard against NaN and infinities
+            if pd.isna(v) or v != v or v == float("inf") or v == float("-inf"):
+                return default
+            return v
+        except Exception:
+            return default
+
     post_collection = client.collections.get("TikTokPost")
     
     if mode == "merge":
@@ -299,7 +310,7 @@ def ingest_tiktok_posts(client, df, entity_uuids, mode="merge"):
                 "hour": hour,
                 
                 # Content - ENHANCED VECTORIZATION
-                "duration": float(row.get('tiktok_duration', 0) or 0),
+                "duration": _safe_float(row.get('tiktok_duration', 0), 0.0),
                 "media_type": attachments_info['media_type'],
                 "media_count": attachments_info['media_count'],
                 

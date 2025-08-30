@@ -71,13 +71,18 @@ def build_bundle(platform: str, dataset_id: str, metrics_dir: Path, insights_dir
     bundle["per_post_sample"] = _read_json(_latest_by_pattern(metrics_dir, "tiktok_per_post_sample_*.json")) or _read_json(_latest_by_pattern(metrics_dir, "per_post_sample_*.json"))
 
     # Executive dashboard + reports/insights (markdown rendered in UI)
-    bundle["executive_dashboard"] = _read_json(insights_dir / "executive_dashboard.json")
+    # Prefer tiktok-prefixed, fallback to legacy unprefixed
+    exec_dash = _read_json(insights_dir / "tiktok_executive_dashboard.json") or _read_json(insights_dir / "executive_dashboard.json")
+    bundle["executive_dashboard"] = exec_dash
 
     safe_ds = ''.join(c if (str(c).isalnum() or c in ('-','_')) else '-' for c in str(dataset_id))
     # Prefer dataset-specific executive report; fallback to latest any if not found
-    exec_md_path = _latest_by_pattern(insights_dir, f"executive_report_{safe_ds}_*.md")
-    if not exec_md_path:
-        exec_md_path = _latest_by_pattern(insights_dir, "executive_report_*.md")
+    exec_md_path = (
+        _latest_by_pattern(insights_dir, f"tiktok_executive_report_{safe_ds}_*.md")
+        or _latest_by_pattern(insights_dir, f"executive_report_{safe_ds}_*.md")
+        or _latest_by_pattern(insights_dir, "tiktok_executive_report_*.md")
+        or _latest_by_pattern(insights_dir, "executive_report_*.md")
+    )
     bundle["executive_report_md"] = _read_text(exec_md_path)
 
     # Optional: include latest insights markdown per focus (if present)
@@ -110,12 +115,11 @@ def main():
     out_path.write_text(json.dumps(bundle, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
     print(f"Wrote {out_path}")
 
-    # Also write/update a stable pointer for the dashboard to auto-load
-    latest_path = out_path.parent / "dashboard_tiktok_bundle_latest.json"
-    latest_path.write_text(json.dumps(bundle, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
-    print(f"Wrote {latest_path}")
+    # Also write/update stable pointers for the dashboard to auto-load
+    latest_generic = out_path.parent / "dashboard_bundle_latest.json"
+    latest_generic.write_text(json.dumps(bundle, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
+    print(f"Wrote {latest_generic}")
 
-    # Also write a TikTok-specific alias for convenience
     tiktok_latest_path = out_path.parent / "dashboard_tiktok_bundle_latest.json"
     tiktok_latest_path.write_text(json.dumps(bundle, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
     print(f"Wrote {tiktok_latest_path}")
