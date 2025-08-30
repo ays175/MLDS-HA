@@ -104,6 +104,19 @@ def find_latest_metric_files(metrics_dir: Path, platform: str = "tiktok") -> Lis
             # fallback if ever produced without suffix
             "latest_metrics_summary.json",
         ]
+    elif platform == "instagram":
+        families = [
+            "instagram_brand_performance_*.json",
+            "instagram_content_type_performance_*.json",
+            "instagram_temporal_analytics_*.json",
+            # No duration_performance for IG currently
+            "instagram_top_performers_*.json",
+            "instagram_worst_performers_*.json",
+        ]
+        summary_names = [
+            "latest_metrics_summary_instagram.json",
+            "latest_metrics_summary.json",
+        ]
     else:
         # Default to TikTok patterns
         families = [
@@ -154,6 +167,9 @@ def find_insight_files(insights_dir: Path, dataset_id: str) -> List[Path]:
         f"tiktok_executive_report_{safe_ds}_*.md",
         f"facebook_executive_summary_{safe_ds}_*.json",
         f"facebook_executive_report_{safe_ds}_*.md",
+        # Instagram executive artifacts
+        f"instagram_executive_summary_{safe_ds}_*.json",
+        f"instagram_executive_report_{safe_ds}_*.md",
     ]
     files: List[Path] = []
     for pattern in patterns:
@@ -165,11 +181,11 @@ def infer_doc_type(path: Path) -> str:
     name = path.name
     if name.startswith("ai_insights_"):
         return "insight"
-    if name.startswith("executive_summary_") or name.startswith("tiktok_executive_summary_") or name.startswith("facebook_executive_summary_"):
+    if name.startswith("executive_summary_") or name.startswith("tiktok_executive_summary_") or name.startswith("facebook_executive_summary_") or name.startswith("instagram_executive_summary_"):
         return "summary"
-    if name.startswith("executive_report_") or name.startswith("tiktok_executive_report_") or name.startswith("facebook_executive_report_"):
+    if name.startswith("executive_report_") or name.startswith("tiktok_executive_report_") or name.startswith("facebook_executive_report_") or name.startswith("instagram_executive_report_"):
         return "report"
-    if name in ("latest_metrics_summary.json", "latest_metrics_summary_facebook.json", "latest_metrics_summary_tiktok.json"):
+    if name in ("latest_metrics_summary.json", "latest_metrics_summary_facebook.json", "latest_metrics_summary_tiktok.json", "latest_metrics_summary_instagram.json"):
         return "metrics_summary"
     return "metrics" if name.endswith(".json") else "report"
 
@@ -247,8 +263,13 @@ def main():
         insights_dir = Path(args.insights_dir)
 
         # Validate dataset match from latest summary if present (platform-aware)
+        platform_summary = {
+            "tiktok": "latest_metrics_summary_tiktok.json",
+            "facebook": "latest_metrics_summary_facebook.json",
+            "instagram": "latest_metrics_summary_instagram.json",
+        }.get(args.platform, "latest_metrics_summary.json")
         summary_candidates = [
-            metrics_dir / ("latest_metrics_summary_facebook.json" if args.platform == "facebook" else "latest_metrics_summary.json"),
+            metrics_dir / platform_summary,
             metrics_dir / "latest_metrics_summary.json",
         ]
         for latest_summary in summary_candidates:

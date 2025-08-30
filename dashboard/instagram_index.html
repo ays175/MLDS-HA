@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Facebook Analytics Dashboard</title>
+    <title>Instagram Analytics Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-      // Improve chart legibility on dark background
       if (window.Chart) {
         Chart.defaults.color = '#ffffff';
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.2)';
@@ -44,14 +43,13 @@
       .section-card { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
       .chart-container { height: 320px; position: relative; }
       .chart-container-small { height: 240px; }
-      /* Center the Weekend vs Weekday doughnut chart */
       #weekendChart { display: block; margin: 0 auto; max-width: 420px; }
+      #gaugeER { display: block; margin: 0 auto; max-width: 420px; }
       .metric-primary { font-size: 2.25rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; }
       .section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; position: relative; padding-bottom: 12px; }
       .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 48px; height: 3px; background: linear-gradient(90deg, #0ea5e9, #22c55e); border-radius: 2px; }
       .loading-spinner { width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.2); border-top: 2px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      /* Tooltip styles (match TikTok) */
       .tooltip { position: fixed; background: rgba(0, 0, 0, 0.9); color: #fff; padding: 12px 16px; border-radius: 8px; font-size: 0.875rem; line-height: 1.4; max-width: 280px; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
       .tooltip.show { opacity: 1; }
       .chart-help { margin-top: 4px; }
@@ -62,7 +60,7 @@
       <div class="max-w-7xl mx-auto px-6 py-5">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-white">Facebook Analytics</h1>
+            <h1 class="text-2xl font-bold text-white">Instagram Analytics</h1>
             <p class="text-white/60 text-sm font-medium">Performance Intelligence Dashboard</p>
           </div>
           <div class="flex items-center gap-4">
@@ -144,7 +142,7 @@
             <div class="chart-container"><canvas id="brandChart"></canvas></div>
           </div>
           <div class="card rounded-xl p-6">
-            <h3 class="text-lg font-semibold text-white mb-4">Brand Completion Rates</h3>
+            <h3 class="text-lg font-semibold text-white mb-4">Brand Story Completion</h3>
             <div class="chart-container"><canvas id="brandCompletionChart"></canvas></div>
           </div>
         </div>
@@ -204,7 +202,7 @@
           <div class="card rounded-xl p-6">
             <h3 class="text-lg font-semibold text-white mb-4">Performance Benchmarks</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="text-center"><div class="chart-container-small"><canvas id="gaugeCR"></canvas></div><p class="text-white/60 text-sm mt-2">Completion Rate</p></div>
+              <div class="text-center"><div class="chart-container-small"><canvas id="gaugeCR"></canvas></div><p class="text-white/60 text-sm mt-2">Story Completion</p></div>
               <div class="text-center"><div class="chart-container-small"><canvas id="gaugeViral"></canvas></div><p class="text-white/60 text-sm mt-2">Viral Performance</p></div>
               <div class="text-center"><div class="chart-container-small"><canvas id="kpiRadar"></canvas></div><p class="text-white/60 text-sm mt-2">Overall Performance</p></div>
             </div>
@@ -224,21 +222,16 @@
       const colors = { primary: ['#0ea5e9','#38bdf8','#7dd3fc'], success: ['#22c55e','#4ade80','#86efac'], warning: ['#f59e0b','#fbbf24','#fcd34d'], danger: ['#ef4444','#f87171','#fca5a5'], neutral: ['#64748b','#94a3b8','#cbd5e1'] };
       let charts = {};
 
-      // Tooltip definitions (metrics and charts)
       const tooltips = {
-        // KPIs
         'Impressions': 'Total displays across posts.\nFormula: sum(impressions)',
-        'Engagements': 'Total interactions (likes, comments, shares).\nFormula: sum(engagements)',
+        'Engagements': 'Total interactions (likes, comments, shares, saves).\nFormula: sum(engagements)',
         'Views': 'Total video plays (≥1s).\nFormula: sum(video_views)',
         'Posts': 'Total posts analyzed.\nFormula: count(posts)',
         'Eng. Rate': 'Engagements ÷ Views × 100 (dataset average).\nFormula: (sum(engagements)/sum(views)) × 100',
-        'Completion': 'Average % watched; retention indicator.\nFormula: mean(completion_rate) × 100',
-        'View Rate': 'Views ÷ Impressions × 100.\nFormula: (sum(views)/sum(impressions)) × 100',
-        'Avg Duration': 'Average video length (seconds).\nFormula: mean(duration)',
+        'Story Completion': 'Average story completion %.\nFormula: mean(story_completion_rate) × 100',
         'Avg Eng/Post': 'Average engagements per post.\nFormula: total_engagements ÷ total_posts',
         'Avg Views/Post': 'Average views per post.\nFormula: total_video_views ÷ total_posts',
-        'Max Views/Post': 'Highest per-post views.\nFormula: max(video_views)',
-        'Max Impr/Post': 'Highest per-post impressions.\nFormula: max(impressions)',
+        'View Rate': 'Views ÷ Impressions × 100.\nFormula: (total_video_views ÷ total_impressions) × 100',
         'Brands': 'Distinct brands analyzed.\nFormula: count(unique brand names)',
         'Content Types': 'Distinct content types analyzed.\nFormula: count(unique content_type)',
         'Max Eng/Post': 'Highest engagements for a single post.\nFormula: max(engagements)',
@@ -246,41 +239,25 @@
         'Best Day': 'Weekday with highest average engagements.\nFormula: argmax(mean(engagements) by day)',
         'Worst Hour': 'Hour with lowest average engagements.\nFormula: argmin(mean(engagements) by hour)',
         'Worst Day': 'Weekday with lowest average engagements.\nFormula: argmin(mean(engagements) by day)',
-        'Top Duration (ER)': 'Duration bucket with highest engagement rate.\nFormula: argmax(avg_engagement_rate) over duration_summary',
-        'Top Duration (CR)': 'Duration bucket with highest completion rate.\nFormula: argmax(avg_completion_rate) over duration_summary',
-
-        // Executive Summary
-        'Engagement Rate': 'Audience interaction quality.\nFormula: (sum(engagements)/sum(views)) × 100',
-        'Content Volume': 'Sample size for reliability.\nFormula: count(posts)',
-        'Completion Rate': 'Average % watched; retention indicator.\nFormula: mean(completion_rate) × 100',
-        'Viral Threshold': '95th percentile of views; “viral” cutoff.\nFormula: quantile(views, 0.95)',
-        'Above High ER': 'Share of posts above ER benchmark.\nFormula: mean(ER_post > high_engagement_threshold) × 100',
-        'Above High CR': 'Share of posts above CR benchmark.\nFormula: mean(CR_post > high_completion_threshold) × 100',
-
-        // Charts
         'Daily Performance Trend': 'Avg engagements by day.\nFormula: mean(engagements) per day_of_week',
         'Hourly Performance': 'Avg engagements by hour.\nFormula: mean(engagements) per hour',
         'Daily Performance': 'Weekday engagement pattern.\nFormula: mean(engagements) per day_of_week',
         'Performance Heatmap': 'Hour×day engagement intensity.\nFormula: mean(engagements) per (day,hour)',
         'Weekend vs Weekday': 'Comparison of avg engagements.\nFormula: mean(engagements) for weekend vs weekday',
         'Top Brands by Engagement': 'Avg ER by brand (ranked).\nFormula: (avg_engagements/avg_impressions) × 100',
-        'Brand Completion Rates': 'Avg completion by brand.\nFormula: mean(completion_rate) × 100',
-        'Performance Matrix': 'ER vs CR per brand (top-right best).\nFormula: x=avg ER, y=avg CR',
+        'Brand Story Completion': 'Avg story completion by brand.\nFormula: mean(story_completion_rate) × 100',
+        'Performance Matrix': 'ER vs Story Completion per brand.\nFormula: x=avg ER, y=avg story completion',
         'Brand Contribution': 'Pareto of total engagements.\nFormula: total_engagements per brand + cumulative %',
         'Content Type Performance': 'Avg ER by content type.\nFormula: (avg_engagements/avg_impressions) × 100',
         'Content Distribution': 'Post volume by content type.\nFormula: count(posts) per type',
         'Engagement Distribution': 'Histogram of per-post engagements.\nFormula: bin counts over engagements',
-        'Completion Rate': 'Gauge: average completion % (CR).\nFormula: mean(completion_rate) × 100',
+        'Story Completion': 'Gauge: average story completion %.',
+        'Engagement Benchmark': 'Dataset engagement benchmark (avg ER).\nFormula: (sum(engagements)/sum(views)) × 100',
         'Viral Performance': 'Avg views vs viral threshold.\nFormula: mean(views_per_post) / viral_threshold × 100',
         'Overall Performance': 'Radar of key metrics.\nFormula: normalized key metrics',
-        'Engagement Benchmark': 'Dataset engagement benchmark (avg ER).\nFormula: (sum(engagements)/sum(views)) × 100',
-        // Tables/sections
-        'Top Performers': 'Top 10% posts by engagement rate.\nFormula: engagement_rate ≥ 90th percentile',
-        'Improvement Areas': 'Bottom 10% posts by engagement rate.\nFormula: engagement_rate ≤ 10th percentile',
         'Executive Report': 'Markdown executive summary generated by the analytics agent.'
       };
 
-      // Canvas id → help key
       const chartHelp = {
         dailyTrendChart: 'Daily Performance Trend',
         hourlyChart: 'Hourly Performance',
@@ -288,19 +265,18 @@
         hourlyHeatmap: 'Performance Heatmap',
         weekendChart: 'Weekend vs Weekday',
         brandChart: 'Top Brands by Engagement',
-        brandCompletionChart: 'Brand Completion Rates',
+        brandCompletionChart: 'Brand Story Completion',
         brandScatterChart: 'Performance Matrix',
         brandParetoChart: 'Brand Contribution',
         contentChart: 'Content Type Performance',
         contentStackedChart: 'Content Distribution',
         engagementHistChart: 'Engagement Distribution',
         gaugeER: 'Engagement Benchmark',
-        gaugeCR: 'Completion Rate',
+        gaugeCR: 'Story Completion',
         gaugeViral: 'Viral Performance',
         kpiRadar: 'Overall Performance'
       };
 
-      // Tooltip element
       const tooltip = document.createElement('div');
       tooltip.className = 'tooltip';
       document.body.appendChild(tooltip);
@@ -315,7 +291,6 @@
       }
       function hideTooltip(){ tooltip.classList.remove('show'); }
 
-      // Anchor tooltip near a specific element (consistent placement)
       function showTooltipAtElement(el, text){
         if (!el) return;
         tooltip.textContent = text; tooltip.classList.add('show');
@@ -329,7 +304,6 @@
         tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
       }
 
-      // Anchor tooltip near a canvas (chart) top-left
       function showTooltipAtCanvas(canvas, text){
         if (!canvas) return;
         tooltip.textContent = text; tooltip.classList.add('show');
@@ -343,7 +317,6 @@
       }
 
       function addTooltips(){
-        // KPI cards (anchor to label element)
         document.querySelectorAll('#kpis .card').forEach(function(card){
           const labelEl = card.querySelector('.text-xs'); if(!labelEl) return;
           const label = labelEl.textContent.trim(); const txt = tooltips[label]; if(!txt) return;
@@ -351,7 +324,6 @@
           card.addEventListener('mouseenter', function(){ showTooltipAtElement(labelEl, txt); });
           card.addEventListener('mouseleave', hideTooltip);
         });
-        // Executive summary cards (keep as-is; already correct)
         document.querySelectorAll('#executiveSummary .card').forEach(function(card){
           const titleEl = card.querySelector('h3'); if(!titleEl) return;
           const title = titleEl.textContent.trim(); const txt = tooltips[title]; if(!txt) return;
@@ -359,7 +331,6 @@
           card.addEventListener('mouseenter', function(e){ showTooltip(e, txt); });
           card.addEventListener('mouseleave', hideTooltip);
         });
-        // Chart cards (anchor to chart title or canvas)
         document.querySelectorAll('.chart-container canvas, .chart-container-small canvas').forEach(function(canvas){
           const card = canvas.closest('.card'); if(!card) return;
           const titleEl = card.querySelector('h3');
@@ -374,7 +345,6 @@
           canvas.addEventListener('mouseenter', function(){ showTooltipAtCanvas(canvas, txt); });
           canvas.addEventListener('mouseleave', hideTooltip);
         });
-        // Table cards (anchor to section title)
         document.querySelectorAll('#topTable, #worstTable').forEach(function(tbl){
           const card = tbl.closest('.card'); if(!card) return;
           const titleEl = card.querySelector('h3'); if(!titleEl) return;
@@ -383,7 +353,6 @@
           card.addEventListener('mouseenter', function(){ showTooltipAtElement(titleEl, txt); });
           card.addEventListener('mouseleave', hideTooltip);
         });
-        // Executive report (anchor to section title)
         var execCard = document.querySelector('#executiveMd');
         if (execCard) {
           execCard = execCard.closest('.card');
@@ -404,8 +373,7 @@
           const titleEl = card.querySelector('h3.text-lg');
           const cardTitle = titleEl ? titleEl.textContent.trim() : '';
           const helpKey = mappedKey || cardTitle; const txt = tooltips[helpKey]; if(!txt) return;
-          let anchorEl = titleEl;
-          if (!anchorEl) return;
+          let anchorEl = titleEl; if (!anchorEl) return;
           if (card.querySelector('.chart-help[data-for="' + canvas.id + '"]')) return;
           const help = document.createElement('p'); help.className = 'chart-help text-white/60 text-xs'; help.textContent = txt; help.setAttribute('data-for', canvas.id);
           anchorEl.insertAdjacentElement('afterend', help);
@@ -437,7 +405,7 @@
         const insights = [
           { type:'positive', t:'Engagement Rate', v: formatPercent(km.average_engagement_rate||0), d:'Average engagement across all content' },
           { type:'neutral', t:'Content Volume', v: formatNumber(ds.total_posts||0), d:'Total posts analyzed' },
-          { type:(+km.average_completion_rate||0) > 50 ? 'positive':'negative', t:'Completion Rate', v: formatPercent(km.average_completion_rate||0), d:'Average video completion rate' },
+          { type:(+km.average_story_completion_rate||0) > 50 ? 'positive':'negative', t:'Story Completion', v: formatPercent(km.average_story_completion_rate||0), d:'Average story completion rate' },
           { type:'neutral', t:'Viral Threshold', v: formatNumber(bench.viral_threshold), d:'95th percentile of views (viral cutoff)' },
           { type:'good', t:'Best Hour', v:(bestHour===null||bestHour===undefined)?'N/A':(bestHour+':00'), d:'Hour with highest avg engagements' },
           { type:'good', t:'Best Day', v: bestDay || 'N/A', d:'Weekday with highest avg engagements' },
@@ -465,13 +433,12 @@
         const viewRate = (+km.total_impressions || 0) ? ((+km.total_video_views || 0) / (+km.total_impressions || 1)) * 100 : 0;
         const brandsCount = Array.isArray(brandSummary) ? brandSummary.length : 0;
         const contentTypesCount = Array.isArray(contentSummary) ? new Set(contentSummary.map(d=>d.content_type)).size : 0;
-        const maxEngPost = Math.max(0, ...(topPosts||[]).map(p => +p.facebook_insights_engagements || 0));
+        const maxEngPost = Math.max(0, ...(topPosts||[]).map(p => +p.instagram_insights_engagement || 0));
         const bestHour = hourly.length ? hourly.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).hour : null;
         const worstHour = hourly.length ? hourly.reduce((a,b)=> (a.avg_engagements||Infinity) <= (b.avg_engagements||Infinity) ? a : b).hour : null;
         const bestDay = daily.length ? daily.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).day_of_week : null;
         const worstDay = daily.length ? daily.reduce((a,b)=> (a.avg_engagements||Infinity) <= (b.avg_engagements||Infinity) ? a : b).day_of_week : null;
 
-        // From key_metrics if available
         const maxViewsPost = +km.max_views_post || 0;
         const maxImprPost = +km.max_impressions_post || 0;
 
@@ -481,7 +448,7 @@
           { label: 'Views', value: formatNumber(km.total_video_views), color: colors.warning[0] },
           { label: 'Posts', value: formatNumber(ds.total_posts), color: colors.danger[0] },
           { label: 'Eng. Rate', value: formatPercent(km.average_engagement_rate), color: colors.success[1] },
-          { label: 'Completion', value: formatPercent(km.average_completion_rate), color: colors.primary[1] },
+          { label: 'Story Completion', value: formatPercent(km.average_story_completion_rate), color: colors.primary[1] },
           { label: 'Avg Eng/Post', value: formatNumber(avgEngPerPost), color: colors.neutral[0] },
           { label: 'Avg Views/Post', value: formatNumber(avgViewsPerPost), color: colors.neutral[1] },
           { label: 'View Rate', value: (viewRate||0).toFixed(1) + '%', color: colors.neutral[2] },
@@ -496,7 +463,7 @@
           { label: 'Worst Day', value: worstDay || 'N/A', color: colors.danger[0] }
         ];
 
-        container.innerHTML = kpis.map(d=>`<div class=\"card rounded-xl p-4 text-center\"><div class=\"w-3 h-3 rounded-full mx-auto mb-3\" style=\"background: ${d.color}\"></div><div class=\"metric-secondary text-white mb-1\">${d.value}</div><div class=\"text-white/60 text-xs font-medium uppercase tracking-wide\">${d.label}</div></div>`).join('');
+        container.innerHTML = kpis.map(d=>`<div class="card rounded-xl p-4 text-center"><div class="w-3 h-3 rounded-full mx-auto mb-3" style="background: ${d.color}"></div><div class="metric-secondary text-white mb-1">${d.value}</div><div class="text-white/60 text-xs font-medium uppercase tracking-wide">${d.label}</div></div>`).join('');
       }
 
       function drawDailyTrend(bundle){
@@ -529,27 +496,13 @@
                 const intensity = Math.min(0.8, (v / maxV) * 0.8 + 0.2);
                 return 'rgba(14,165,233,' + intensity + ')';
               },
-              width: function(ctx){
-                const chart = ctx.chart;
-                return (chart.chartArea || {}).width / 24;
-              },
-              height: function(ctx){
-                const chart = ctx.chart;
-                return (chart.chartArea || {}).height / 7;
-              },
+              width: function(ctx){ const chart = ctx.chart; return (chart.chartArea || {}).width / 24; },
+              height: function(ctx){ const chart = ctx.chart; return (chart.chartArea || {}).height / 7; },
               borderWidth: 1,
               borderColor: 'rgba(255,255,255,0.1)'
             }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: { type: 'linear', min: 0, max: 23 },
-              y: { type: 'category', labels: days }
-            },
-            plugins: { legend: { display: false } }
-          }
+          options: { responsive: true, maintainAspectRatio: false, scales: { x: { type:'linear', min:0, max:23 }, y: { type:'category', labels: days } }, plugins: { legend: { display:false } } }
         });
       }
 
@@ -558,23 +511,7 @@
         const weekend=['Saturday','Sunday']; let wkd=0,wkdN=0,wke=0,wkeN=0;
         data.forEach(d=>{ if(weekend.includes(d.day_of_week)){ wke += d.avg_engagements||0; wkeN++; } else { wkd += d.avg_engagements||0; wkdN++; } });
         const ctx = document.getElementById('weekendChart'); if(!ctx) return; destroyChart('weekend');
-        charts.weekend = new Chart(ctx, { 
-          type:'doughnut', 
-          data:{ 
-            labels:['Weekday','Weekend'], 
-            datasets:[{ 
-              data:[wkdN?wkd/wkdN:0, wkeN?wke/wkeN:0], 
-              backgroundColor:[colors.primary[0]+'80', colors.success[0]+'80'], 
-              borderColor:[colors.primary[0], colors.success[0]], 
-              borderWidth:2 
-            }] 
-          }, 
-          options:{ 
-            cutout:'60%',
-            layout: { padding: { top: 12, bottom: 12 } },
-            plugins: { legend: { display: true, position: 'bottom', labels: { padding: 16 } } }
-          } 
-        });
+        charts.weekend = new Chart(ctx, { type:'doughnut', data:{ labels:['Weekday','Weekend'], datasets:[{ data:[wkdN?wkd/wkdN:0, wkeN?wke/wkeN:0], backgroundColor:[colors.primary[0]+'80', colors.success[0]+'80'], borderColor:[colors.primary[0], colors.success[0]], borderWidth:2 }] }, options:{ cutout:'60%', layout:{ padding:{ top:12, bottom:12 } }, plugins:{ legend:{ display:true, position:'bottom', labels:{ padding:16 } } } } });
       }
 
       function drawBrands(bundle){
@@ -585,9 +522,9 @@
 
       function drawBrandCompletion(bundle){
         const summary = safe(bundle.brand_performance?.brand_summary, []); if(!summary.length) return;
-        const top = [...summary].sort((a,b)=> (b.avg_completion_rate||0)-(a.avg_completion_rate||0)).slice(0,10);
+        const top = [...summary].sort((a,b)=> (b.avg_story_completion_rate||0)-(a.avg_story_completion_rate||0)).slice(0,10);
         const ctx = document.getElementById('brandCompletionChart'); if(!ctx) return; destroyChart('brandCompletion');
-        charts.brandCompletion = new Chart(ctx, { type:'bar', data:{ labels: top.map(d=> d.brand), datasets:[{ label:'Avg Completion Rate (%)', data: top.map(d=> (d.avg_completion_rate||0)), backgroundColor: colors.warning[0]+'80', borderColor: colors.warning[0], borderWidth:2, borderRadius:6 }] } });
+        charts.brandCompletion = new Chart(ctx, { type:'bar', data:{ labels: top.map(d=> d.brand), datasets:[{ label:'Avg Story Completion (%)', data: top.map(d=> (d.avg_story_completion_rate||0)), backgroundColor: colors.warning[0]+'80', borderColor: colors.warning[0], borderWidth:2, borderRadius:6 }] } });
       }
 
       function drawBrandPerformanceMatrix(bundle){
@@ -599,7 +536,7 @@
             datasets: [{
               label: 'Brand',
               data: summary.map(function(d){
-                return { x: d.avg_engagement_rate || 0, y: (d.avg_completion_rate || 0), label: String(d.brand) };
+                return { x: (d.avg_engagement_rate || 0), y: (d.avg_story_completion_rate || 0), label: String(d.brand) };
               }),
               backgroundColor: colors.primary[0]
             }]
@@ -610,14 +547,14 @@
               tooltip: {
                 callbacks: {
                   label: function(c){
-                    return String(c.raw.label) + ': ER ' + ((+c.raw.x).toFixed(2)) + '%, CR ' + ((+c.raw.y).toFixed(2)) + '%';
+                    return String(c.raw.label) + ': ER ' + ((+c.raw.x).toFixed(2)) + '%, SCR ' + ((+c.raw.y).toFixed(2)) + '%';
                   }
                 }
               }
             },
             scales: {
               x: { title: { display: true, text: 'Avg Engagement Rate (%)' } },
-              y: { title: { display: true, text: 'Avg Completion Rate (%)' } }
+              y: { title: { display: true, text: 'Avg Story Completion (%)' } }
             }
           }
         });
@@ -665,16 +602,12 @@
         const km = safe(bundle.dataset_overview?.key_metrics, {});
         const val = +km.average_engagement_rate || 0;
         const ctx = document.getElementById('gaugeER'); if(!ctx) return; destroyChart('gaugeER');
-        charts.gaugeER = new Chart(ctx, {
-          type: 'doughnut',
-          data: { datasets: [{ data: [Math.min(100, val), Math.max(0, 100 - val)], backgroundColor: [colors.success[0], '#ffffff22'], borderWidth: 0 }] },
-          options: { cutout: '70%', plugins: { legend: { display: false }, title: { display: true, text: (val.toFixed(1) + '%') } } }
-        });
+        charts.gaugeER = new Chart(ctx, { type:'doughnut', data:{ datasets:[{ data:[Math.min(100, val), Math.max(0, 100 - val)], backgroundColor:[colors.success[0], '#ffffff22'], borderWidth: 0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text: (val.toFixed(1) + '%') } } } });
       }
 
       function drawEngagementDistribution(bundle){
         const sample = safe(bundle.per_post_sample?.per_post_sample, []); if(!sample.length) return;
-        const vals = sample.map(s=> +s.facebook_insights_engagements||0).filter(v=> Number.isFinite(v)); if(!vals.length) return;
+        const vals = sample.map(s=> +s.instagram_insights_engagement||0).filter(v=> Number.isFinite(v)); if(!vals.length) return;
         const bins = 20, max = Math.max(...vals), edges = Array.from({length: bins+1}, (_,i)=> (i/bins)*max);
         const counts = Array(bins).fill(0); vals.forEach(v=>{ const idx=Math.min(bins-1, Math.floor((v/max)*bins)); counts[idx]++; });
         const labels = counts.map((_,i)=> `${Math.round(edges[i])}-${Math.round(edges[i+1])}`);
@@ -686,12 +619,9 @@
         const km = safe(bundle.dataset_overview?.key_metrics, {});
         const bench = safe(bundle.dataset_overview?.performance_benchmarks, {});
         const ds = safe(bundle.dataset_overview, {});
-        // Completion gauge
-        const ctxCR = document.getElementById('gaugeCR'); if(ctxCR){ destroyChart('gaugeCR'); const cr = +km.average_completion_rate||0; charts.gaugeCR = new Chart(ctxCR, { type:'doughnut', data:{ datasets:[{ data:[Math.min(100,cr), Math.max(0,100-cr)], backgroundColor:[colors.primary[0], '#ffffff22'], borderWidth:0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text:`${cr.toFixed(1)}%` } } } }); }
-        // Viral gauge
+        const ctxCR = document.getElementById('gaugeCR'); if(ctxCR){ destroyChart('gaugeCR'); const cr = +km.average_story_completion_rate||0; charts.gaugeCR = new Chart(ctxCR, { type:'doughnut', data:{ datasets:[{ data:[Math.min(100,cr), Math.max(0,100-cr)], backgroundColor:[colors.primary[0], '#ffffff22'], borderWidth:0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text:`${cr.toFixed(1)}%` } } } }); }
         const ctxV = document.getElementById('gaugeViral'); if(ctxV){ destroyChart('gaugeViral'); const totalPosts = +ds.total_posts||0; const avgViews = totalPosts ? ((+km.total_video_views||0)/totalPosts) : 0; const thr = +bench.viral_threshold||1; const pct = Math.min(100, Math.max(0, (avgViews/thr)*100)); charts.gaugeViral = new Chart(ctxV, { type:'doughnut', data:{ datasets:[{ data:[pct, 100-pct], backgroundColor:[colors.warning[0], '#ffffff22'], borderWidth:0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text:`${pct.toFixed(1)}%` } } } }); }
-        // KPI Radar
-        const ctxR = document.getElementById('kpiRadar'); if(ctxR){ destroyChart('kpiRadar'); const dataR = [ Math.min(100, +km.average_engagement_rate||0), Math.min(100, +km.average_completion_rate||0), +km.total_video_views||0, +km.total_engagements||0, +km.total_impressions||0 ]; charts.kpiRadar = new Chart(ctxR, { type:'radar', data:{ labels:['Eng %','Comp %','Views','Engagements','Impressions'], datasets:[{ label:'KPI', data: dataR, borderColor: colors.primary[0], backgroundColor: colors.primary[0]+'33' }] } }); }
+        const ctxR = document.getElementById('kpiRadar'); if(ctxR){ destroyChart('kpiRadar'); const dataR = [ Math.min(100, +km.average_engagement_rate||0), Math.min(100, +km.average_story_completion_rate||0), +km.total_video_views||0, +km.total_engagements||0, +km.total_impressions||0 ]; charts.kpiRadar = new Chart(ctxR, { type:'radar', data:{ labels:['Eng %','Story %','Views','Engagements','Impressions'], datasets:[{ label:'KPI', data: dataR, borderColor: colors.primary[0], backgroundColor: colors.primary[0]+'33' }] } }); }
       }
 
       function drawDaily(bundle){
@@ -703,10 +633,10 @@
       function renderTopWorstTables(bundle){
         const top = safe(bundle.top_performers?.top_posts, []).slice(0,10);
         const worst = safe(bundle.worst_performers?.worst_posts, []).slice(0,10);
-        const rowTop = r=> `<tr><td>${r.facebook_id||''}</td><td>${(+r.engagement_rate||0).toFixed(2)}%</td><td>${(+r.facebook_insights_video_views_average_completion||0).toFixed(2)}%</td></tr>`;
-        const rowWorst = r=> `<tr><td>${r.facebook_id||''}</td><td>${(+r.engagement_rate||0).toFixed(2)}%</td><td>${(+r.facebook_insights_video_views_average_completion||0).toFixed(2)}%</td></tr>`;
-        const topTbl = document.getElementById('topTable'); topTbl.innerHTML = top.length? `<thead><tr><th>Post</th><th>Eng %</th><th>Comp %</th></tr></thead><tbody>${top.map(rowTop).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
-        const worstTbl = document.getElementById('worstTable'); worstTbl.innerHTML = worst.length? `<thead><tr><th>Post</th><th>Eng %</th><th>Comp %</th></tr></thead><tbody>${worst.map(rowWorst).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
+        const rowTop = r=> `<tr><td>${r.instagram_id||''}</td><td>${(+r.engagement_rate||0).toFixed(2)}%</td><td>${(+r.instagram_insights_story_completion_rate||0).toFixed(2)}%</td></tr>`;
+        const rowWorst = r=> `<tr><td>${r.instagram_id||''}</td><td>${(+r.engagement_rate||0).toFixed(2)}%</td><td>${(+r.instagram_insights_story_completion_rate||0).toFixed(2)}%</td></tr>`;
+        const topTbl = document.getElementById('topTable'); topTbl.innerHTML = top.length? `<thead><tr><th>Post</th><th>Eng %</th><th>Story %</th></tr></thead><tbody>${top.map(rowTop).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
+        const worstTbl = document.getElementById('worstTable'); worstTbl.innerHTML = worst.length? `<thead><tr><th>Post</th><th>Eng %</th><th>Story %</th></tr></thead><tbody>${worst.map(rowWorst).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
       }
 
       function renderExecutive(bundle){
@@ -722,7 +652,7 @@
       async function loadBundle(){
         showLoading();
         const ds = document.getElementById('datasetId').value.trim();
-        const url = ds ? `./dashboard_bundle_${ds}.json` : `./dashboard_facebook_bundle_latest.json`;
+        const url = ds ? `./dashboard_bundle_${ds}.json` : `./dashboard_instagram_bundle_latest.json`;
         try { const res = await fetch(url); const bundle = await res.json();
           drawExecutiveSummary(bundle); drawKPIs(bundle); drawDailyTrend(bundle); drawHourly(bundle); drawDaily(bundle); drawEngagementBenchmark(bundle); drawHourlyHeatmap(bundle); drawWeekendWeekday(bundle); drawBrands(bundle); drawBrandCompletion(bundle); drawBrandPerformanceMatrix(bundle); drawBrandContribution(bundle); drawContent(bundle); drawContentDistribution(bundle); drawEngagementDistribution(bundle); drawPerformanceBenchmarks(bundle); renderTopWorstTables(bundle); renderExecutive(bundle); addTooltips(); bindChartCanvasTooltips(); addChartHelpText(); hideLoading();
         } catch(e){ document.getElementById('status').innerHTML = '<div class="w-2 h-2 bg-red-500 rounded-full"></div> <span>Load failed</span>'; console.error('Load error:', e); }
