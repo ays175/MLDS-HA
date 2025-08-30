@@ -1,0 +1,19 @@
+[project]
+name = "mlds-ha"
+version = "0.1.0"
+description = "Social analytics pipelines (TikTok/Facebook), RAG indexing, and dashboards"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "weaviate-client>=4.6",
+  "python-dotenv>=1.0",
+  "tqdm>=4.66",
+  "requests>=2.31",
+]
+
+[tool.uv]
+dev-dependencies = []
+
+
