@@ -5,3 +5,8 @@ data/processed/
 data/raw/
 insights/
 metrics/
+# Added: ignore dashboard bundles and local env/artifacts
+dashboard/*.json
+dashboard/**/*.json
+.env
+.DS_Store

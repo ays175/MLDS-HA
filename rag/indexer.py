@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple RAG indexer for social analytics artifacts (TikTok now, IG/FB later).
+Simple RAG indexer for social analytics artifacts (TikTok, Facebook, Instagram, Cross-Platform).
 
 Indexes the latest reports, insights, and metrics for a given platform and dataset_id
 into a single Weaviate collection `SocialAnalyticsDoc` for agent retrieval.
@@ -117,6 +117,18 @@ def find_latest_metric_files(metrics_dir: Path, platform: str = "tiktok") -> Lis
             "latest_metrics_summary_instagram.json",
             "latest_metrics_summary.json",
         ]
+    elif platform == "cross_platform":
+        families = [
+            "cross_platform_brand_performance_*.json",
+            "cross_platform_content_type_performance_*.json",
+            "cross_platform_temporal_analytics_*.json",
+            "cross_platform_top_performers_*.json",
+            "cross_platform_worst_performers_*.json",
+        ]
+        summary_names = [
+            "latest_metrics_summary_cross_platform.json",
+            "latest_metrics_summary.json",
+        ]
     else:
         # Default to TikTok patterns
         families = [
@@ -170,6 +182,11 @@ def find_insight_files(insights_dir: Path, dataset_id: str) -> List[Path]:
         # Instagram executive artifacts
         f"instagram_executive_summary_{safe_ds}_*.json",
         f"instagram_executive_report_{safe_ds}_*.md",
+        # Cross-platform artifacts
+        f"ai_insights_cross_platform_*_{safe_ds}_*.json",
+        f"ai_insights_cross_platform_*_{safe_ds}_*.md",
+        f"cross_platform_executive_summary_{safe_ds}_*.json",
+        f"cross_platform_executive_report_{safe_ds}_*.md",
     ]
     files: List[Path] = []
     for pattern in patterns:
@@ -179,13 +196,15 @@ def find_insight_files(insights_dir: Path, dataset_id: str) -> List[Path]:
 
 def infer_doc_type(path: Path) -> str:
     name = path.name
+    if name.startswith("ai_insights_cross_platform_"):
+        return "insight"
     if name.startswith("ai_insights_"):
         return "insight"
-    if name.startswith("executive_summary_") or name.startswith("tiktok_executive_summary_") or name.startswith("facebook_executive_summary_") or name.startswith("instagram_executive_summary_"):
+    if name.startswith("executive_summary_") or name.startswith("tiktok_executive_summary_") or name.startswith("facebook_executive_summary_") or name.startswith("instagram_executive_summary_") or name.startswith("cross_platform_executive_summary_"):
         return "summary"
-    if name.startswith("executive_report_") or name.startswith("tiktok_executive_report_") or name.startswith("facebook_executive_report_") or name.startswith("instagram_executive_report_"):
+    if name.startswith("executive_report_") or name.startswith("tiktok_executive_report_") or name.startswith("facebook_executive_report_") or name.startswith("instagram_executive_report_") or name.startswith("cross_platform_executive_report_"):
         return "report"
-    if name in ("latest_metrics_summary.json", "latest_metrics_summary_facebook.json", "latest_metrics_summary_tiktok.json", "latest_metrics_summary_instagram.json"):
+    if name in ("latest_metrics_summary.json", "latest_metrics_summary_facebook.json", "latest_metrics_summary_tiktok.json", "latest_metrics_summary_instagram.json", "latest_metrics_summary_cross_platform.json"):
         return "metrics_summary"
     return "metrics" if name.endswith(".json") else "report"
 
@@ -244,7 +263,7 @@ def upsert_docs(
 
 def main():
     parser = argparse.ArgumentParser(description="Index social analytics artifacts into Weaviate RAG")
-    parser.add_argument("--platform", default="tiktok", choices=["tiktok", "instagram", "facebook"], help="Source platform")
+    parser.add_argument("--platform", default="tiktok", choices=["tiktok", "instagram", "facebook", "cross_platform"], help="Source platform")
     parser.add_argument("--dataset-id", required=True, help="Dataset identifier to index")
     parser.add_argument("--metrics-dir", default="./metrics/tiktok", help="Metrics directory")
     parser.add_argument("--insights-dir", default="./insights/tiktok", help="Insights directory")
