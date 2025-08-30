@@ -1,0 +1,1550 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TikTok Analytics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4.3.2/build/index.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+              success: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
+              warning: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
+              danger: { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d' },
+              neutral: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { 
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); 
+        min-height: 100vh; 
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      }
+      
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: all 0.2s ease;
+      }
+      
+      .card:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+      
+      .header-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .section-card {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .chart-container { 
+        height: 320px; 
+        position: relative; 
+      }
+      
+      .chart-container-large { height: 400px; }
+      .chart-container-small { height: 240px; }
+      .chart-container canvas { width: 100% !important; height: 100% !important; }
+      
+      .metric-primary { 
+        font-size: 2.25rem; 
+        font-weight: 700; 
+        line-height: 1.1; 
+        letter-spacing: -0.025em;
+      }
+      
+      .metric-secondary { 
+        font-size: 1.25rem; 
+        font-weight: 600; 
+        line-height: 1.2; 
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        position: relative;
+        padding-bottom: 12px;
+      }
+      
+      .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 48px;
+        height: 3px;
+        background: linear-gradient(90deg, #0ea5e9, #22c55e);
+        border-radius: 2px;
+      }
+      
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      .status-excellent { 
+        background: rgba(34, 197, 94, 0.15); 
+        color: #22c55e; 
+        border: 1px solid rgba(34, 197, 94, 0.2); 
+      }
+      
+      .status-good { 
+        background: rgba(14, 165, 233, 0.15); 
+        color: #0ea5e9; 
+        border: 1px solid rgba(14, 165, 233, 0.2); 
+      }
+      
+      .status-warning { 
+        background: rgba(245, 158, 11, 0.15); 
+        color: #f59e0b; 
+        border: 1px solid rgba(245, 158, 11, 0.2); 
+      }
+      
+      .status-danger { 
+        background: rgba(239, 68, 68, 0.15); 
+        color: #ef4444; 
+        border: 1px solid rgba(239, 68, 68, 0.2); 
+      }
+      
+      .loading-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top: 2px solid #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin { 
+        0% { transform: rotate(0deg); } 
+        100% { transform: rotate(360deg); } 
+      }
+      
+      .insight-card {
+        border-left: 4px solid;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      
+      .insight-positive { border-left-color: #22c55e; }
+      .insight-negative { border-left-color: #ef4444; }
+      .insight-neutral { border-left-color: #0ea5e9; }
+      
+      table { 
+        width: 100%; 
+        border-collapse: separate; 
+        border-spacing: 0; 
+      }
+      
+      th, td { 
+        padding: 12px 16px; 
+        text-align: left; 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+      }
+      
+      th { 
+        background: rgba(255, 255, 255, 0.04); 
+        font-weight: 600; 
+        font-size: 0.75rem; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      td { 
+        font-size: 0.875rem; 
+        color: rgba(255, 255, 255, 0.9);
+      }
+      
+      tr:hover { 
+        background: rgba(255, 255, 255, 0.03); 
+      }
+      
+      .btn-primary {
+        background: linear-gradient(135deg, #0ea5e9, #22c55e);
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+      }
+      
+      .input-field {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: white;
+        transition: all 0.2s ease;
+      }
+      
+      .input-field:focus {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(14, 165, 233, 0.5);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      }
+      
+      .input-field::placeholder { 
+        color: rgba(255, 255, 255, 0.4); 
+      }
+      
+      .tooltip {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        max-width: 280px;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      
+      .tooltip.show {
+        opacity: 1;
+      }
+      
+      .tooltip-trigger {
+        position: relative;
+        cursor: help;
+      }
+      
+      .tooltip-trigger:hover .tooltip {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <!-- Header -->
+    <div class="sticky top-0 z-50 header-card">
+      <div class="max-w-7xl mx-auto px-6 py-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-white">TikTok Analytics</h1>
+            <p class="text-white/60 text-sm font-medium">Performance Intelligence Dashboard</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+              <input 
+                id="datasetId" 
+                class="input-field rounded-lg px-4 py-2 text-sm w-48" 
+                placeholder="Dataset ID (optional)" 
+              />
+              <button 
+                id="loadBtn" 
+                class="btn-primary px-6 py-2 rounded-lg text-sm flex items-center gap-2"
+              >
+                <span id="loadText">Load Data</span>
+                <div id="loadSpinner" class="loading-spinner hidden"></div>
+              </button>
+            </div>
+            <div id="status" class="text-white/60 text-sm flex items-center gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-6 space-y-8">
+      <!-- Executive Summary -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Executive Summary</h2>
+        <div id="executiveSummary" class="grid grid-cols-1 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- Key Metrics -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Key Performance Indicators</h2>
+        <div id="kpis" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+      </section>
+
+      <!-- Performance Overview -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Performance Overview</h2>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2 card rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-white">Daily Performance Trend</h3>
+              <div class="status-badge status-good">
+                <div class="w-2 h-2 bg-current rounded-full"></div>
+                Trending
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="dailyTrendChart"></canvas>
+            </div>
+          </div>
+          <div class="space-y-6">
+            <div class="card rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-white mb-4">Engagement Benchmark</h3>
+              <div class="chart-container-small">
+                <canvas id="gaugeER"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Temporal Analytics -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Temporal Analytics</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Hourly Performance</h3>
+            <div class="chart-container">
+              <canvas id="hourlyChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Daily Performance</h3>
+            <div class="chart-container">
+              <canvas id="dailyChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Performance Heatmap</h3>
+            <div class="chart-container mt-6">
+              <canvas id="hourlyHeatmap"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Weekend vs Weekday</h3>
+            <div class="chart-container">
+              <canvas id="weekendChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Brand Performance -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Brand Performance</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Top Brands by Engagement</h3>
+            <div class="chart-container">
+              <canvas id="brandChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Brand Completion Rates</h3>
+            <div class="chart-container">
+              <canvas id="brandCompletionChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Performance Matrix</h3>
+            <div class="chart-container">
+              <canvas id="brandScatterChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Brand Contribution</h3>
+            <div class="chart-container">
+              <canvas id="brandParetoChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Analysis -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Content Analysis</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Content Type Performance</h3>
+            <div class="chart-container">
+              <canvas id="contentChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Duration Performance</h3>
+            <div class="chart-container">
+              <canvas id="durationChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Content Distribution</h3>
+            <div class="chart-container">
+              <canvas id="contentStackedChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Duration vs Engagement</h3>
+            <div class="chart-container">
+              <canvas id="contentScatterChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advanced Analytics -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Advanced Analytics</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Engagement Distribution</h3>
+            <div class="chart-container">
+              <canvas id="engagementHistChart"></canvas>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Completion Rate Analysis</h3>
+            <div class="chart-container">
+              <canvas id="durationBoxChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card rounded-xl p-6">
+          <h3 class="text-lg font-semibold text-white mb-6">Performance Benchmarks</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+              <div class="chart-container-small">
+                <canvas id="gaugeCR"></canvas>
+              </div>
+              <p class="text-white/60 text-sm mt-2">Completion Rate</p>
+            </div>
+            <div class="text-center">
+              <div class="chart-container-small">
+                <canvas id="gaugeViral"></canvas>
+              </div>
+              <p class="text-white/60 text-sm mt-2">Viral Performance</p>
+            </div>
+            <div class="text-center">
+              <div class="chart-container-small">
+                <canvas id="kpiRadar"></canvas>
+              </div>
+              <p class="text-white/60 text-sm mt-2">Overall Performance</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Performance Rankings -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Performance Rankings</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-3 h-3 bg-success-500 rounded-full"></div>
+              <h3 class="text-lg font-semibold text-white">Top Performers</h3>
+            </div>
+            <div class="overflow-x-auto">
+              <table id="topTable"></table>
+            </div>
+          </div>
+          <div class="card rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-3 h-3 bg-warning-500 rounded-full"></div>
+              <h3 class="text-lg font-semibold text-white">Improvement Areas</h3>
+            </div>
+            <div class="overflow-x-auto">
+              <table id="worstTable"></table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executive Report -->
+      <section class="section-card rounded-2xl p-8">
+        <h2 class="section-title text-white mb-8">Executive Report</h2>
+        <div class="card rounded-xl p-6">
+          <article id="executiveMd" class="prose prose-invert max-w-none"></article>
+        </div>
+      </section>
+
+      <!-- Hidden canvases for compatibility -->
+      <div style="display: none;">
+        <canvas id="brandTotalsChart"></canvas>
+        <canvas id="hourlyViewsChart"></canvas>
+        <canvas id="durationCompletionChart"></canvas>
+        <canvas id="durationViolinChart"></canvas>
+        <canvas id="contentCompletionChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      // Professional color palette
+      const colors = {
+        primary: ['#0ea5e9', '#38bdf8', '#7dd3fc'],
+        success: ['#22c55e', '#4ade80', '#86efac'],
+        warning: ['#f59e0b', '#fbbf24', '#fcd34d'],
+        danger: ['#ef4444', '#f87171', '#fca5a5'],
+        neutral: ['#64748b', '#94a3b8', '#cbd5e1']
+      };
+
+      Chart.defaults.color = '#ffffff';
+      Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+      Chart.defaults.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+      let charts = {};
+
+      // Tooltip definitions for all metrics and charts
+      const tooltips = {
+        // KPIs (with formulas)
+        'Impressions': 'Total displays across posts.\nFormula: sum(impressions)',
+        'Engagements': 'Total interactions (likes, comments, shares).\nFormula: likes + comments + shares (+ saves if present)',
+        'Views': 'Total video plays (≥1s).\nFormula: sum(video_views)',
+        'Posts': 'Total posts analyzed.\nFormula: count(posts)',
+        'Eng. Rate': 'Engagements ÷ Views × 100 (dataset average). Industry avg: 3–5%.\nFormula: (sum(engagements)/sum(views)) × 100',
+        'Completion': 'Average % watched. Good: >50%, Excellent: >70%.\nFormula: mean(completion_rate) × 100',
+        'View Rate': 'Views ÷ Impressions × 100. Discoverability proxy.\nFormula: (sum(views)/sum(impressions)) × 100',
+        'Avg Duration': 'Average video length (seconds).\nFormula: mean(duration)',
+        'Max Views/Post': 'Highest per-post views.\nFormula: max(video_views)',
+        'Max Impr/Post': 'Highest per-post impressions.\nFormula: max(impressions)',
+        'Above High ER': '% posts above ER benchmark.\nFormula: mean(engagements_post > high_engagement_threshold) × 100',
+        'Above High CR': '% posts above CR benchmark.\nFormula: mean(completion_rate_post > high_completion_threshold) × 100',
+        // Additional KPI tooltip definitions
+        'Avg Eng/Post': 'Average engagements per post.\nFormula: total_engagements ÷ total_posts',
+        'Avg Views/Post': 'Average views per post.\nFormula: total_video_views ÷ total_posts',
+        'View Rate': 'Views ÷ Impressions × 100.\nFormula: (total_video_views ÷ total_impressions) × 100',
+        'Brands': 'Distinct brands analyzed.\nFormula: count(unique brand names)',
+        'Content Types': 'Distinct content types analyzed.\nFormula: count(unique content_type)',
+        'Max Eng/Post': 'Highest engagements for a single post.\nFormula: max(tiktok_insights_engagements)',
+        'Best Hour': 'Hour with highest average engagements.\nFormula: argmax(mean(engagements) by hour)',
+        'Best Day': 'Weekday with highest average engagements.\nFormula: argmax(mean(engagements) by day)',
+        'Worst Hour': 'Hour with lowest average engagements.\nFormula: argmin(mean(engagements) by hour)',
+        'Worst Day': 'Weekday with lowest average engagements.\nFormula: argmin(mean(engagements) by day)',
+        'Top Duration (ER)': 'Duration bucket with highest engagement rate.\nFormula: argmax(avg_engagement_rate) over duration_summary',
+        'Top Duration (CR)': 'Duration bucket with highest completion rate.\nFormula: argmax(avg_completion_rate) over duration_summary',
+        
+        // Executive Summary (with formulas)
+        'Engagement Rate': 'Audience interaction quality.\nFormula: (sum(engagements)/sum(views)) × 100',
+        'Content Volume': 'Sample size for reliability.\nFormula: count(posts)',
+        'Completion Rate': 'Average % watched; retention indicator.\nFormula: mean(completion_rate) × 100',
+        'Viral Threshold': '95th percentile of views; “viral” cutoff.\nFormula: quantile(views, 0.95)',
+        'Above High ER': 'Share of posts above ER benchmark.\nFormula: mean(ER_post > high_engagement_threshold) × 100',
+        'Above High CR': 'Share of posts above CR benchmark.\nFormula: mean(CR_post > high_completion_threshold) × 100',
+        
+        // Charts (with formulas)
+        'Daily Performance Trend': 'Avg engagements by day.\nFormula: mean(engagements) per day_of_week',
+        'Hourly Performance': 'Avg engagements by hour.\nFormula: mean(engagements) per hour',
+        'Daily Performance': 'Weekday engagement pattern.\nFormula: mean(engagements) per day_of_week',
+        'Performance Heatmap': 'Hour×day engagement intensity.\nFormula: mean(engagements) per (day,hour)',
+        'Weekend vs Weekday': 'Comparison of avg engagements.\nFormula: mean(engagements) for weekend vs weekday',
+        'Top Brands by Engagement': 'Avg ER by brand (ranked).\nFormula: (avg_engagements/avg_impressions) × 100',
+        'Brand Completion Rates': 'Avg completion by brand.\nFormula: mean(completion_rate) × 100',
+        'Performance Matrix': 'ER vs CR per brand (top-right best).\nFormula: x=avg ER, y=avg CR',
+        'Brand Contribution': 'Pareto of total engagements.\nFormula: total_engagements per brand + cumulative %',
+        'Content Type Performance': 'Avg ER by content type.\nFormula: (avg_engagements/avg_impressions) × 100',
+        'Duration Performance': 'ER & CR by duration bucket.\nFormula: bucketed means',
+        'Content Distribution': 'Post volume by content type.\nFormula: count(posts) per type',
+        'Duration vs Engagement': 'Avg duration vs ER (scatter).\nFormula: x=avg duration, y=avg ER',
+        'Engagement Distribution': 'Histogram of per-post engagements.\nFormula: bin counts over engagements',
+        'Completion Rate Analysis': 'Completion by duration bucket.\nFormula: mean(completion_rate) per bucket',
+        'Completion Rate': 'Gauge: average completion %.\nFormula: mean(completion_rate) × 100',
+        'Viral Performance': 'Avg views vs viral threshold.\nFormula: mean(views_per_post) / viral_threshold × 100',
+        'Overall Performance': 'Radar of key metrics.\nFormula: normalized key metrics',
+        'Engagement Benchmark': 'Dataset engagement benchmark (avg ER).\nFormula: (sum(engagements)/sum(views)) × 100',
+        
+        // Performance indicators
+        'Trending': 'Performance is improving over time based on recent data',
+        'Excellent': 'Performance exceeds industry benchmarks (top 10%)',
+        'Good': 'Performance meets or exceeds average expectations',
+        'Warning': 'Performance below average, needs attention',
+        'Poor': 'Performance significantly below benchmarks, requires immediate action'
+      };
+
+      // Canvas → help-key map so charts themselves also show tooltips
+      const chartHelp = {
+        dailyTrendChart: 'Daily Performance Trend',
+        hourlyChart: 'Hourly Performance',
+        dailyChart: 'Daily Performance',
+        hourlyHeatmap: 'Performance Heatmap',
+        weekendChart: 'Weekend vs Weekday',
+        brandChart: 'Top Brands by Engagement',
+        brandCompletionChart: 'Brand Completion Rates',
+        brandScatterChart: 'Performance Matrix',
+        brandParetoChart: 'Brand Contribution',
+        contentChart: 'Content Type Performance',
+        durationChart: 'Duration Performance',
+        contentStackedChart: 'Content Distribution',
+        contentScatterChart: 'Duration vs Engagement',
+        engagementHistChart: 'Engagement Distribution',
+        durationBoxChart: 'Completion Rate Analysis',
+        gaugeER: 'Engagement Benchmark',
+        gaugeCR: 'Completion Rate',
+        gaugeViral: 'Viral Performance',
+        kpiRadar: 'Overall Performance',
+      };
+
+      // Create tooltip element
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      document.body.appendChild(tooltip);
+
+      // Tooltip functionality
+      function showTooltip(event, text) {
+        tooltip.textContent = text;
+        tooltip.classList.add('show');
+        
+        // Position near cursor, then clamp to viewport
+        const tooltipRect = tooltip.getBoundingClientRect();
+        const margin = 8;
+        let left = event.clientX + margin;
+        let top = event.clientY + margin + 4;
+        
+        // If overflowing right edge
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+          left = Math.max(10, window.innerWidth - tooltipRect.width - 10);
+        }
+        // If overflowing bottom edge, flip above cursor
+        if (top + tooltipRect.height > window.innerHeight - 10) {
+          top = Math.max(10, event.clientY - tooltipRect.height - margin);
+        }
+        
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove('show');
+      }
+
+      // Position tooltip relative to a specific element (e.g., chart title)
+      function showTooltipAtElement(el, text) {
+        if (!el) return;
+        tooltip.textContent = text;
+        tooltip.classList.add('show');
+
+        const rect = el.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        // Align just below/left of the element
+        let left = rect.left + 8;
+        let top = rect.bottom + 6;
+
+        // Clamp within viewport
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+          left = Math.max(10, window.innerWidth - tooltipRect.width - 10);
+        }
+        if (top + tooltipRect.height > window.innerHeight - 10) {
+          top = Math.max(10, rect.top - tooltipRect.height - 6);
+        }
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+
+      // Position tooltip relative to a canvas (anchor to its top-left edge)
+      function showTooltipAtCanvas(canvas, text) {
+        if (!canvas) return;
+        tooltip.textContent = text;
+        tooltip.classList.add('show');
+
+        const rect = canvas.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        // Place near the canvas top-left with a small inset
+        let left = rect.left + 8;
+        let top = rect.top + 8;
+
+        // Clamp
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+          left = Math.max(10, window.innerWidth - tooltipRect.width - 10);
+        }
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+
+      // Add tooltips to elements
+      function addTooltips() {
+        // Add tooltips to KPI cards (anchor to label)
+        document.querySelectorAll('#kpis .card').forEach((card) => {
+          const labelEl = card.querySelector('.text-xs');
+          if (!labelEl) return;
+          const label = labelEl.textContent.trim();
+          const tooltipText = tooltips[label];
+          if (tooltipText) {
+            card.style.cursor = 'help';
+            card.addEventListener('mouseenter', () => showTooltipAtElement(labelEl, tooltipText));
+            card.addEventListener('mouseleave', hideTooltip);
+          }
+        });
+
+        // Executive summary cards (keep as-is; already correct)
+        document.querySelectorAll('#executiveSummary .insight-card').forEach(card => {
+          const titleEl = card.querySelector('h3');
+          if (!titleEl) return;
+          const title = titleEl.textContent.trim();
+          const tooltipText = tooltips[title];
+          if (tooltipText) {
+            card.style.cursor = 'help';
+            card.addEventListener('mouseenter', (e) => showTooltip(e, tooltipText));
+            card.addEventListener('mouseleave', hideTooltip);
+          }
+        });
+
+        // Chart tooltips: attach to title and canvas
+        document.querySelectorAll('.chart-container canvas, .chart-container-small canvas, .chart-container-large canvas').forEach((canvas) => {
+          const card = canvas.closest('.card');
+          if (!card) return;
+          const titleEl = card.querySelector('h3');
+          const key = chartHelp[canvas.id] || (titleEl ? titleEl.textContent.trim() : '');
+          const txt = tooltips[key];
+          if (!txt) return;
+          if (titleEl) {
+            titleEl.style.cursor = 'help';
+            titleEl.addEventListener('mouseenter', () => showTooltipAtElement(titleEl, txt));
+            titleEl.addEventListener('mouseleave', hideTooltip);
+          }
+          canvas.style.cursor = 'help';
+          canvas.addEventListener('mouseenter', () => showTooltipAtCanvas(canvas, txt));
+          canvas.addEventListener('mouseleave', hideTooltip);
+        });
+
+        // Status badges (unchanged but anchored to badge itself)
+        document.querySelectorAll('.status-badge').forEach(badge => {
+          const statusText = badge.textContent.trim();
+          const tooltipText = tooltips[statusText];
+          if (tooltipText) {
+            badge.style.cursor = 'help';
+            badge.addEventListener('mouseenter', () => showTooltipAtElement(badge, tooltipText));
+            badge.addEventListener('mouseleave', hideTooltip);
+          }
+        });
+      }
+
+      // Render chart help text inline beneath chart titles
+      function addChartHelpText() {
+        // For each rendered canvas (any size), append a small help paragraph near its title/label
+        document.querySelectorAll('.chart-container canvas, .chart-container-small canvas, .chart-container-large canvas').forEach((canvas) => {
+          const card = canvas.closest('.card');
+          if (!card) return;
+
+          // Resolve help key: prefer explicit map by canvas id
+          const mappedKey = chartHelp[canvas.id];
+          const cardTitleEl = card.querySelector('h3.text-lg');
+          const cardTitle = cardTitleEl ? cardTitleEl.textContent.trim() : '';
+
+          // Prefer mapped key text if available, else fall back to card title text
+          const helpKey = mappedKey || cardTitle;
+          const txt = tooltips[helpKey];
+          if (!txt) return;
+
+          // Determine best insertion anchor: matching h3 if texts match; otherwise try the small chart label under the canvas
+          let anchorEl = null;
+          // Find an h3 whose text matches helpKey
+          const matchingH3 = Array.from(card.querySelectorAll('h3.text-lg')).find(h => h.textContent.trim() === helpKey);
+          if (matchingH3) {
+            anchorEl = matchingH3;
+          } else {
+            // Look for the label paragraph under small chart blocks
+            const smallWrap = canvas.closest('.text-center');
+            const labelP = smallWrap ? smallWrap.querySelector('p') : null;
+            if (labelP) anchorEl = labelP;
+          }
+
+          // Fallback to card title if no specific anchor is found
+          if (!anchorEl && cardTitleEl) anchorEl = cardTitleEl;
+          if (!anchorEl) return;
+
+          // Avoid duplicates for this specific canvas
+          const existing = card.querySelector(`.chart-help[data-for="${canvas.id}"]`);
+          if (existing) return;
+
+          const help = document.createElement('p');
+          help.className = 'chart-help text-white/60 text-xs';
+          help.textContent = txt;
+          help.setAttribute('data-for', canvas.id);
+
+          // If the anchor is a title, remove its bottom margin for tight spacing
+          if (anchorEl.tagName === 'H3') {
+            Array.from(anchorEl.classList).forEach(cls => { if (cls.startsWith('mb-')) anchorEl.classList.remove(cls); });
+            anchorEl.classList.add('mb-0');
+          }
+
+          // Insert directly under the anchor
+          anchorEl.insertAdjacentElement('afterend', help);
+        });
+      }
+
+      // Ensure canvas tooltips bind after charts are created
+      function bindChartCanvasTooltips() { /* disabled for charts */ }
+
+      function safe(val, fallback) { return (val === undefined || val === null) ? fallback : val; }
+
+      function formatNumber(num) {
+        if (!Number.isFinite(+num)) return 'N/A';
+        const n = +num;
+        if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+        if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+        if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+        return n.toLocaleString();
+      }
+
+      function formatPercent(num) {
+        if (!Number.isFinite(+num)) return 'N/A';
+        const n = +num;
+        const pct = n <= 1 ? n * 100 : n;
+        return `${pct.toFixed(1)}%`;
+      }
+
+      // Normalize possibly fractional values (0-1) to percentage scale (0-100)
+      function toPercent(value) {
+        const n = +value || 0;
+        return n <= 1 ? n * 100 : n;
+      }
+
+      function destroyChart(chartRef) {
+        if (charts[chartRef]) {
+          charts[chartRef].destroy();
+          delete charts[chartRef];
+        }
+      }
+
+      function createChart(ctx, config) {
+        const defaultConfig = {
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { 
+                  color: '#ffffff', 
+                  usePointStyle: true, 
+                  padding: 16,
+                  font: { size: 12, weight: 500 }
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                padding: 12
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: '#ffffff', font: { size: 11 } },
+                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+              },
+              y: {
+                ticks: { color: '#ffffff', font: { size: 11 } },
+                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+              }
+            }
+          }
+        };
+
+        const mergedConfig = { ...config };
+        if (config.options) {
+          mergedConfig.options = { ...defaultConfig.options, ...config.options };
+          if (config.options.scales) {
+            mergedConfig.options.scales = { ...defaultConfig.options.scales, ...config.options.scales };
+          }
+          if (config.options.plugins) {
+            mergedConfig.options.plugins = { ...defaultConfig.options.plugins, ...config.options.plugins };
+          }
+        } else {
+          mergedConfig.options = defaultConfig.options;
+        }
+
+        return new Chart(ctx, mergedConfig);
+      }
+
+      function drawExecutiveSummary(bundle) {
+        const container = document.getElementById('executiveSummary');
+        const km = safe(bundle.dataset_overview?.key_metrics, {});
+        const ds = safe(bundle.dataset_overview, {});
+        const bench = safe(bundle.dataset_overview?.performance_benchmarks, {});
+        const hourly = safe(bundle.temporal_analytics?.hourly_performance, []);
+        const daily = safe(bundle.temporal_analytics?.daily_performance, []);
+        const sample = safe(bundle.per_post_sample?.per_post_sample, []);
+
+        const bestHour = hourly.length ? hourly.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).hour : null;
+        const bestDay = daily.length ? daily.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).day_of_week : null;
+        const totalPostsES = +ds.total_posts || 0;
+        const avgViewsPerPostES = totalPostsES ? (+km.total_video_views || 0) / totalPostsES : 0;
+        const avgEngPerPostES = totalPostsES ? (+km.total_engagements || 0) / totalPostsES : 0;
+        const viewRateES = (+km.total_impressions || 0) ? ((+km.total_video_views || 0) / (+km.total_impressions || 1)) * 100 : 0;
+        let aboveHighERPctES = null;
+        let aboveHighCRPctES = null;
+        const erThr = +bench.high_engagement_threshold;
+        const crThr = +bench.high_completion_threshold;
+        if (Array.isArray(sample) && sample.length) {
+          if (Number.isFinite(erThr)) {
+            const num = sample.filter(s => (+s.engagement_rate || 0) > erThr).length;
+            aboveHighERPctES = (num / sample.length) * 100;
+          }
+          if (Number.isFinite(crThr)) {
+            const num = sample.filter(s => (+s.tiktok_insights_completion_rate || 0) > crThr).length;
+            aboveHighCRPctES = (num / sample.length) * 100;
+          }
+        }
+        
+        const insights = [
+          {
+            type: 'positive',
+            title: 'Engagement Rate',
+            value: formatPercent(km.average_engagement_rate),
+            description: 'Average engagement across all content'
+          },
+          {
+            type: 'neutral',
+            title: 'Content Volume',
+            value: formatNumber(ds.total_posts),
+            description: 'Total posts analyzed'
+          },
+          {
+            type: km.average_completion_rate > 50 ? 'positive' : 'negative',
+            title: 'Completion Rate',
+            value: formatPercent(km.average_completion_rate),
+            description: 'Average video completion rate'
+          },
+          {
+            type: 'neutral',
+            title: 'Viral Threshold',
+            value: formatNumber(bench.viral_threshold),
+            description: '95th percentile of views (viral cutoff)'
+          },
+          {
+            type: 'good',
+            title: 'Best Hour',
+            value: (bestHour === null || bestHour === undefined) ? 'N/A' : `${bestHour}:00`,
+            description: 'Hour with highest avg engagements'
+          },
+          {
+            type: 'good',
+            title: 'Best Day',
+            value: bestDay || 'N/A',
+            description: 'Weekday with highest avg engagements'
+          },
+          {
+            type: 'neutral',
+            title: 'View Rate',
+            value: `${(viewRateES||0).toFixed(1)}%`,
+            description: 'Views ÷ Impressions'
+          },
+          {
+            type: 'neutral',
+            title: 'Avg Views/Post',
+            value: formatNumber(avgViewsPerPostES),
+            description: 'Average views per post'
+          },
+          {
+            type: 'neutral',
+            title: 'Avg Eng/Post',
+            value: formatNumber(avgEngPerPostES),
+            description: 'Average engagements per post'
+          }
+        ];
+        // Optionally add Above High ER/CR when computable
+        if (aboveHighERPctES !== null) {
+          insights.push({ type: 'neutral', title: 'Above High ER', value: `${aboveHighERPctES.toFixed(1)}%`, description: 'Share of posts above ER benchmark' });
+        }
+        if (aboveHighCRPctES !== null) {
+          insights.push({ type: 'neutral', title: 'Above High CR', value: `${aboveHighCRPctES.toFixed(1)}%`, description: 'Share of posts above CR benchmark' });
+        }
+
+        container.innerHTML = insights.map(insight => `
+          <div class="insight-card insight-${insight.type} card rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-3">${insight.title}</h3>
+            <div class="metric-primary text-white mb-2">${insight.value}</div>
+            <p class="text-white/60 text-sm">${insight.description}</p>
+          </div>
+        `).join('');
+      }
+
+      function drawKPIs(bundle) {
+        const container = document.getElementById('kpis');
+        const km = safe(bundle.dataset_overview?.key_metrics, {});
+        const ds = safe(bundle.dataset_overview, {});
+        const hourly = safe(bundle.temporal_analytics?.hourly_performance, []);
+        const daily = safe(bundle.temporal_analytics?.daily_performance, []);
+        const brandSummary = safe(bundle.brand_performance?.brand_summary, []);
+        const contentSummary = safe(bundle.content_type_performance?.content_summary, []);
+        const topPosts = safe(bundle.top_performers?.top_posts, []);
+        const sample = safe(bundle.per_post_sample?.per_post_sample, []);
+
+        const totalPosts = +ds.total_posts || 0;
+        const avgEngPerPost = totalPosts ? (+km.total_engagements || 0) / totalPosts : 0;
+        const avgViewsPerPost = totalPosts ? (+km.total_video_views || 0) / totalPosts : 0;
+        const viewRate = (+km.total_impressions || 0) ? ((+km.total_video_views || 0) / (+km.total_impressions || 1)) * 100 : 0;
+        const brandsCount = Array.isArray(brandSummary) ? brandSummary.length : 0;
+        const contentTypesCount = Array.isArray(contentSummary) ? new Set(contentSummary.map(d=>d.content_type)).size : 0;
+        const maxEngPost = topPosts.length ? Math.max(...topPosts.map(p => +p.tiktok_insights_engagements || 0)) : 0;
+        const maxViewsPost = (Array.isArray(sample) && sample.length)
+          ? Math.max(...sample.map(p => +p.tiktok_insights_video_views || 0).filter(Number.isFinite))
+          : (topPosts.length ? Math.max(...topPosts.map(p => +p.tiktok_insights_video_views || 0).filter(Number.isFinite)) : 0);
+        const maxImprPost = (Array.isArray(sample) && sample.length)
+          ? Math.max(...sample.map(p => +p.tiktok_insights_impressions || 0).filter(Number.isFinite))
+          : (topPosts.length ? Math.max(...topPosts.map(p => +p.tiktok_insights_impressions || 0).filter(Number.isFinite)) : 0);
+        const bestHour = hourly.length ? hourly.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).hour : null;
+        const worstHour = hourly.length ? hourly.reduce((a,b)=> (a.avg_engagements||Infinity) <= (b.avg_engagements||Infinity) ? a : b).hour : null;
+        const bestDay = daily.length ? daily.reduce((a,b)=> (a.avg_engagements||0) >= (b.avg_engagements||0) ? a : b).day_of_week : null;
+        const worstDay = daily.length ? daily.reduce((a,b)=> (a.avg_engagements||Infinity) <= (b.avg_engagements||Infinity) ? a : b).day_of_week : null;
+        const durationSummary = safe(bundle.duration_performance?.duration_summary, []);
+        const topDurER = durationSummary.length ? durationSummary.reduce((a,b)=> (a.avg_engagement_rate||0) >= (b.avg_engagement_rate||0) ? a : b).duration_category : null;
+        const topDurCR = durationSummary.length ? durationSummary.reduce((a,b)=> (a.avg_completion_rate||0) >= (b.avg_completion_rate||0) ? a : b).duration_category : null;
+        // Above threshold shares when available
+        const bench = safe(bundle.dataset_overview?.performance_benchmarks, {});
+        let aboveHighERPct = null, aboveHighCRPct = null;
+        const erThr = +bench.high_engagement_threshold;
+        const crThr = +bench.high_completion_threshold;
+        if (Array.isArray(sample) && sample.length) {
+          if (Number.isFinite(erThr)) {
+            const num = sample.filter(s => (+s.engagement_rate || 0) > erThr).length;
+            aboveHighERPct = (num / sample.length) * 100;
+          }
+          if (Number.isFinite(crThr)) {
+            const num = sample.filter(s => (+s.tiktok_insights_completion_rate || 0) > crThr).length;
+            aboveHighCRPct = (num / sample.length) * 100;
+          }
+        }
+
+        const kpis = [
+          { label: 'Impressions', value: formatNumber(km.total_impressions), color: colors.primary[0] },
+          { label: 'Engagements', value: formatNumber(km.total_engagements), color: colors.success[0] },
+          { label: 'Views', value: formatNumber(km.total_video_views), color: colors.warning[0] },
+          { label: 'Posts', value: formatNumber(ds.total_posts), color: colors.danger[0] },
+          { label: 'Eng. Rate', value: formatPercent(km.average_engagement_rate), color: colors.success[1] },
+          { label: 'Completion', value: formatPercent(km.average_completion_rate), color: colors.primary[1] },
+          // 12 additional KPIs
+          { label: 'Avg Eng/Post', value: formatNumber(avgEngPerPost), color: colors.neutral[0] },
+          { label: 'Avg Views/Post', value: formatNumber(avgViewsPerPost), color: colors.neutral[1] },
+          { label: 'View Rate', value: `${(viewRate||0).toFixed(1)}%`, color: colors.neutral[2] },
+          { label: 'Avg Duration', value: formatNumber(km.average_duration), color: colors.neutral[0] },
+          { label: 'Max Views/Post', value: formatNumber(maxViewsPost), color: colors.neutral[1] },
+          { label: 'Max Impr/Post', value: formatNumber(maxImprPost), color: colors.neutral[2] },
+          { label: 'Brands', value: formatNumber(brandsCount), color: colors.primary[2] },
+          { label: 'Content Types', value: formatNumber(contentTypesCount), color: colors.success[2] },
+          { label: 'Max Eng/Post', value: formatNumber(maxEngPost), color: colors.warning[2] },
+          { label: 'Best Hour', value: (bestHour === null || bestHour === undefined) ? 'N/A' : `${bestHour}:00`, color: colors.primary[0] },
+          { label: 'Best Day', value: bestDay || 'N/A', color: colors.success[0] },
+          { label: 'Worst Hour', value: (worstHour === null || worstHour === undefined) ? 'N/A' : `${worstHour}:00`, color: colors.warning[0] },
+          { label: 'Worst Day', value: worstDay || 'N/A', color: colors.danger[0] },
+          { label: 'Top Duration (ER)', value: topDurER || 'N/A', color: colors.primary[1] },
+          { label: 'Top Duration (CR)', value: topDurCR || 'N/A', color: colors.success[1] },
+          ...(aboveHighERPct !== null ? [{ label: 'Above High ER', value: `${aboveHighERPct.toFixed(1)}%`, color: colors.success[1] }] : []),
+          ...(aboveHighCRPct !== null ? [{ label: 'Above High CR', value: `${aboveHighCRPct.toFixed(1)}%`, color: colors.primary[1] }] : [])
+        ];
+
+        container.innerHTML = kpis.map(kpi => `
+          <div class="card rounded-xl p-4 text-center">
+            <div class="w-3 h-3 rounded-full mx-auto mb-3" style="background: ${kpi.color}"></div>
+            <div class="metric-secondary text-white mb-1">${kpi.value}</div>
+            <div class="text-white/60 text-xs font-medium uppercase tracking-wide">${kpi.label}</div>
+          </div>
+        `).join('');
+      }
+
+      function drawDailyTrend(bundle) {
+        const data = safe(bundle.temporal_analytics?.daily_performance, []);
+        if (!data.length) return;
+        
+        const ctx = document.getElementById('dailyTrendChart');
+        destroyChart('dailyTrend');
+        
+        charts.dailyTrend = createChart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.map(d => d.day_of_week),
+            datasets: [{
+              label: 'Average Engagements',
+              data: data.map(d => d.avg_engagements || 0),
+              borderColor: colors.primary[0],
+              backgroundColor: colors.primary[0] + '20',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 6,
+              pointHoverRadius: 8
+            }]
+          }
+        });
+      }
+
+      // Include all original chart functions with professional styling
+      function drawHourly(bundle) {
+        const data = safe(bundle.temporal_analytics?.hourly_performance, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('hourlyChart');
+        destroyChart('hourly');
+        charts.hourly = createChart(ctx, {
+          type: 'line',
+          data: { 
+            labels: data.map(d => d.hour), 
+            datasets: [{ 
+              label: 'Avg Engagements', 
+              data: data.map(d => d.avg_engagements),
+              borderColor: colors.success[0],
+              backgroundColor: colors.success[0] + '20',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4
+            }] 
+          }
+        });
+      }
+
+      function drawDaily(bundle) {
+        const data = safe(bundle.temporal_analytics?.daily_performance, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('dailyChart');
+        destroyChart('daily');
+        charts.daily = createChart(ctx, {
+          type: 'bar',
+          data: { 
+            labels: data.map(d => d.day_of_week),
+            datasets: [{ 
+              label: 'Avg Engagements', 
+              data: data.map(d => d.avg_engagements),
+              backgroundColor: colors.primary[0] + '80',
+              borderColor: colors.primary[0],
+              borderWidth: 2,
+              borderRadius: 6
+            }] 
+          }
+        });
+      }
+
+      function drawHourlyHeatmap(bundle) {
+        const grid = safe(bundle.temporal_analytics?.hour_by_day, []);
+        const ctx = document.getElementById('hourlyHeatmap');
+        destroyChart('hourlyHeatmap');
+        
+        if (grid.length) {
+          const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+          const maxV = Math.max(...grid.map(g => g.avg_engagements || 0), 1);
+          const data = grid.map(g => ({ x: g.hour, y: days.indexOf(g.day_of_week), v: g.avg_engagements || 0 }));
+          
+          charts.hourlyHeatmap = new Chart(ctx, {
+            type: 'matrix',
+            data: { datasets: [{
+              label: 'Avg Engagements',
+              data,
+              backgroundColor(c){ 
+                const v = c.raw.v || 0; 
+                const intensity = Math.min(0.8, (v / maxV) * 0.8 + 0.2); 
+                return `rgba(14, 165, 233, ${intensity})`; 
+              },
+              width: ({chart}) => (chart.chartArea || {}).width / 24,
+              height: ({chart}) => (chart.chartArea || {}).height / 7,
+              borderWidth: 1,
+              borderColor: 'rgba(255, 255, 255, 0.1)'
+            }] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: { 
+                  type: 'linear', 
+                  min: 0, 
+                  max: 23, 
+                  ticks: { stepSize: 2, color: '#ffffff', font: { size: 10 } }, 
+                  title: { display: true, text: 'Hour', color: '#ffffff' } 
+                },
+                y: { 
+                  type: 'category', 
+                  labels: days, 
+                  ticks: { color: '#ffffff', font: { size: 10 } },
+                  title: { display: true, text: 'Day', color: '#ffffff' } 
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        }
+      }
+
+      function drawWeekendWeekday(bundle) {
+        const data = safe(bundle.temporal_analytics?.daily_performance, []);
+        if (!data.length) return;
+        
+        const weekend = ['Saturday','Sunday'];
+        let wkd = 0, wkdN = 0, wke = 0, wkeN = 0;
+        data.forEach(d => {
+          if (weekend.includes(d.day_of_week)) { 
+            wke += d.avg_engagements || 0; 
+            wkeN++; 
+          } else { 
+            wkd += d.avg_engagements || 0; 
+            wkdN++; 
+          }
+        });
+        
+        const ctx = document.getElementById('weekendChart');
+        destroyChart('weekend');
+        charts.weekend = createChart(ctx, {
+          type: 'doughnut',
+          data: { 
+            labels: ['Weekday', 'Weekend'],
+            datasets: [{ 
+              data: [wkdN ? wkd/wkdN : 0, wkeN ? wke/wkeN : 0],
+              backgroundColor: [colors.primary[0] + '80', colors.success[0] + '80'],
+              borderColor: [colors.primary[0], colors.success[0]],
+              borderWidth: 2
+            }] 
+          },
+          options: {
+            cutout: '60%'
+          }
+        });
+      }
+
+      function drawBrands(bundle) {
+        const data = safe(bundle.brand_performance?.brand_rankings?.top_by_engagement_rate, []);
+        if (!data.length) return;
+        
+        const ctx = document.getElementById('brandChart');
+        destroyChart('brand');
+        charts.brand = createChart(ctx, {
+          type: 'bar',
+          data: { 
+            labels: data.map(d => d.brand),
+            datasets: [{ 
+              label: 'Engagement Rate (%)', 
+              data: data.map(d => d.avg_engagement_rate),
+              backgroundColor: colors.primary[0] + '80',
+              borderColor: colors.primary[0],
+              borderWidth: 2,
+              borderRadius: 6
+            }] 
+          }
+        });
+      }
+
+      function drawContent(bundle) {
+        const data = safe(bundle.content_type_performance?.content_rankings?.highest_engagement_content, []);
+        if (!data.length) return;
+        
+        const ctx = document.getElementById('contentChart');
+        destroyChart('content');
+        charts.content = createChart(ctx, {
+          type: 'bar',
+          data: { 
+            labels: data.map(d => d.content_type),
+            datasets: [{ 
+              label: 'Engagement Rate (%)', 
+              data: data.map(d => d.avg_engagement_rate),
+              backgroundColor: colors.success[0] + '80',
+              borderColor: colors.success[0],
+              borderWidth: 2,
+              borderRadius: 6
+            }] 
+          }
+        });
+      }
+
+      // ---- Additional charts to populate empty panels ----
+      function drawEngagementBenchmark(bundle) {
+        const km = safe(bundle.dataset_overview?.key_metrics, {});
+        const val = +km.average_engagement_rate || 0;
+        const ctx = document.getElementById('gaugeER');
+        destroyChart('gaugeER');
+        charts.gaugeER = createChart(ctx, {
+          type: 'doughnut',
+          data: { datasets: [{ data: [Math.min(100,val), Math.max(0,100-val)], backgroundColor: [colors.success[0], '#ffffff22'], borderWidth: 0 }] },
+          options: { cutout: '70%', plugins: { legend: { display: false }, title: { display: true, text: `${val.toFixed(1)}%` } } }
+        });
+      }
+
+      function drawBrandCompletion(bundle) {
+        const data = safe(bundle.brand_performance?.brand_summary, []);
+        if (!data.length) return;
+        const top = [...data].sort((a,b)=> (b.avg_completion_rate||0)-(a.avg_completion_rate||0)).slice(0,10);
+        const ctx = document.getElementById('brandCompletionChart');
+        destroyChart('brandCompletion');
+        charts.brandCompletion = createChart(ctx, { type:'bar', data:{ labels: top.map(d=>d.brand), datasets:[{ label:'Avg Completion Rate (%)', data: top.map(d=> toPercent(d.avg_completion_rate)), backgroundColor: colors.warning[0]+'80', borderColor: colors.warning[0], borderWidth:2, borderRadius:6 }] } });
+      }
+
+      function drawBrandPerformanceMatrix(bundle) {
+        const data = safe(bundle.brand_performance?.brand_summary, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('brandScatterChart');
+        destroyChart('brandScatter');
+        charts.brandScatter = createChart(ctx, {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: 'Brand',
+              data: data.map(d => ({
+                x: d.avg_engagement_rate || 0,
+                y: toPercent(d.avg_completion_rate),
+                label: String(d.brand)
+              })),
+              backgroundColor: colors.primary[0]
+            }]
+          },
+          options: {
+            parsing: false,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: (c) => (
+                    String(c.raw.label) + ': ER ' + ((+c.raw.x).toFixed(2)) + '%, CR ' + ((+c.raw.y).toFixed(2)) + '%'
+                  )
+                }
+              }
+            },
+            scales: {
+              x: { title: { display: true, text: 'Avg Engagement Rate (%)' } },
+              y: { title: { display: true, text: 'Avg Completion Rate (%)' } }
+            }
+          }
+        });
+      }
+
+      function drawBrandContribution(bundle) {
+        const data = safe(bundle.brand_performance?.brand_summary, []);
+        if (!data.length) return;
+        const sorted = [...data].sort((a,b)=> (b.total_engagements||0)-(a.total_engagements||0)).slice(0,20);
+        const values = sorted.map(d=>d.total_engagements||0);
+        const total = values.reduce((a,b)=>a+b,0)||1;
+        const cum = values.map((v,i)=> (values.slice(0,i+1).reduce((a,b)=>a+b,0)/total)*100);
+        const ctx = document.getElementById('brandParetoChart');
+        destroyChart('brandPareto');
+        charts.brandPareto = new Chart(ctx, {
+          data: {
+            labels: sorted.map(d => d.brand),
+            datasets: [
+              { type: 'bar', label: 'Engagements', data: values, backgroundColor: colors.primary[1] + '80', borderColor: colors.primary[1], borderWidth: 2, borderRadius: 6, yAxisID: 'y' },
+              { type: 'line', label: 'Cumulative %', data: cum, borderColor: colors.danger[0], tension: 0.3, yAxisID: 'y1' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { position: 'left', title: { display: true, text: 'Engagements' } },
+              y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Cumulative %' } }
+            }
+          }
+        });
+      }
+
+      function drawDurationPerformance(bundle) {
+        const data = safe(bundle.duration_performance?.duration_summary, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('durationChart');
+        destroyChart('duration');
+        charts.duration = new Chart(ctx, {
+          data: {
+            labels: data.map(d => d.duration_category),
+            datasets: [
+              { type: 'bar', label: 'Engagement Rate (%)', data: data.map(d => (d.avg_engagement_rate || 0)), backgroundColor: colors.success[0] + '66', borderColor: colors.success[0], borderWidth: 2, borderRadius: 6, yAxisID: 'y' },
+              { type: 'line', label: 'Completion Rate (%)', data: data.map(d => toPercent(d.avg_completion_rate)), borderColor: colors.warning[0], tension: 0.3, yAxisID: 'y1' }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { position: 'left', title: { display: true, text: 'Engagement %' } },
+              y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Completion %' } }
+            }
+          }
+        });
+      }
+
+      function drawContentDistribution(bundle) {
+        const data = safe(bundle.content_type_performance?.content_summary, []);
+        if (!data.length) return;
+        const grouped = {}; data.forEach(d=>{ grouped[d.content_type]=(grouped[d.content_type]||0)+(d.total_posts||0); });
+        const labels = Object.keys(grouped).slice(0,15);
+        const ctx = document.getElementById('contentStackedChart');
+        destroyChart('contentStacked');
+        charts.contentStacked = createChart(ctx, { type:'bar', data:{ labels, datasets:[{ label:'Posts', data: labels.map(l=>grouped[l]||0), backgroundColor: colors.primary[2]+'80', borderColor: colors.primary[2], borderWidth:2, borderRadius:6 }] } });
+      }
+
+      function drawDurationVsEngagement(bundle) {
+        const data = safe(bundle.content_type_performance?.content_summary, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('contentScatterChart');
+        destroyChart('contentScatter');
+        charts.contentScatter = createChart(ctx, {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: 'Content',
+              data: data.map(d => ({
+                x: d.avg_duration || 0,
+                y: d.avg_engagement_rate || 0,
+                label: String(d.content_type)
+              })),
+              backgroundColor: colors.success[1]
+            }]
+          },
+          options: {
+            parsing: false,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: (c) => (
+                    String(c.raw.label) + ': ER ' + ((+c.raw.y).toFixed(2)) + '%, Dur ' + ((+c.raw.x).toFixed(1)) + 's'
+                  )
+                }
+              }
+            },
+            scales: {
+              x: { title: { display: true, text: 'Avg Duration (s)' } },
+              y: { title: { display: true, text: 'Avg Engagement Rate (%)' } }
+            }
+          }
+        });
+      }
+
+      function drawEngagementDistribution(bundle) {
+        const sample = safe(bundle.per_post_sample?.per_post_sample, []);
+        if (!sample.length) return;
+        const vals = sample.map(s=> +s.tiktok_insights_engagements||0).filter(v=>Number.isFinite(v));
+        if (!vals.length) return;
+        const bins = 20, max = Math.max(...vals), edges = Array.from({length: bins+1}, (_,i)=> (i/bins)*max);
+        const counts = Array(bins).fill(0); vals.forEach(v=>{ const idx=Math.min(bins-1, Math.floor((v/max)*bins)); counts[idx]++; });
+        const labels = counts.map((_,i)=> `${Math.round(edges[i])}-${Math.round(edges[i+1])}`);
+        const ctx = document.getElementById('engagementHistChart');
+        destroyChart('engHist');
+        charts.engHist = createChart(ctx, { type:'bar', data:{ labels, datasets:[{ label:'Posts', data: counts, backgroundColor: colors.neutral[2]+'80', borderColor: colors.neutral[2], borderWidth:2, borderRadius:6 }] } });
+      }
+
+      function drawCompletionRateAnalysis(bundle) {
+        const data = safe(bundle.duration_performance?.duration_summary, []);
+        if (!data.length) return;
+        const ctx = document.getElementById('durationBoxChart');
+        destroyChart('durationBox');
+        charts.durationBox = createChart(ctx, { type:'bar', data:{ labels: data.map(d=>d.duration_category), datasets:[{ label:'Avg Completion Rate (%)', data: data.map(d=> toPercent(d.avg_completion_rate)), backgroundColor: colors.warning[1]+'80', borderColor: colors.warning[1], borderWidth:2, borderRadius:6 }] } });
+      }
+
+      function drawPerformanceBenchmarks(bundle) {
+        const km = safe(bundle.dataset_overview?.key_metrics, {});
+        const ds = safe(bundle.dataset_overview, {});
+        const bench = safe(bundle.dataset_overview?.performance_benchmarks, {});
+        // Completion gauge
+        const ctxCR = document.getElementById('gaugeCR'); destroyChart('gaugeCR');
+        const cr = toPercent(km.average_completion_rate);
+        charts.gaugeCR = createChart(ctxCR, { type:'doughnut', data:{ datasets:[{ data:[Math.min(100,cr), Math.max(0,100-cr)], backgroundColor:[colors.primary[0], '#ffffff22'], borderWidth:0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text:`${cr.toFixed(1)}%` } } } });
+        // Viral gauge
+        const ctxV = document.getElementById('gaugeViral'); destroyChart('gaugeViral');
+        const totalPosts = +ds.total_posts || 0; const avgViews = totalPosts ? (+km.total_video_views||0)/totalPosts : 0; const viralThr = +bench.viral_threshold || 1; const pct = Math.min(100, Math.max(0, (avgViews/viralThr)*100));
+        charts.gaugeViral = createChart(ctxV, { type:'doughnut', data:{ datasets:[{ data:[pct, 100-pct], backgroundColor:[colors.warning[0], '#ffffff22'], borderWidth:0 }] }, options:{ cutout:'70%', plugins:{ legend:{ display:false }, title:{ display:true, text:`${pct.toFixed(1)}%` } } } });
+        // KPI Radar
+        const ctxR = document.getElementById('kpiRadar'); destroyChart('kpiRadar');
+        const dataR = [ Math.min(100, +km.average_engagement_rate||0), Math.min(100, toPercent(km.average_completion_rate)||0), +km.total_video_views||0, +km.total_engagements||0, +km.total_impressions||0, +km.average_duration||0 ];
+        charts.kpiRadar = createChart(ctxR, { type:'radar', data:{ labels:['Eng %','Comp %','Views','Engagements','Impressions','Avg Dur'], datasets:[{ label:'KPI', data: dataR, borderColor: colors.primary[0], backgroundColor: colors.primary[0]+'33' }] } });
+      }
+
+      function renderTopWorstTables(bundle) {
+        const top = safe(bundle.top_performers?.top_posts, []).slice(0,10);
+        const worst = safe(bundle.worst_performers?.worst_posts, []).slice(0,10);
+        const nameFrom = (labels, id)=>{ if(!labels) return `Post ${id||''}`; const parts=String(labels).split(',').map(s=>s.trim()); const b=parts.find(p=>p.startsWith('[Brand]')); return b? b.replace('[Brand]','').trim() : `Post ${id||''}`; };
+        const row = r=> `<tr><td>${nameFrom(r.tiktok_post_labels_names, r.tiktok_id)}</td><td>${(+r.engagement_rate||0).toFixed(2)}%</td><td>${(+r.tiktok_insights_completion_rate||0).toFixed(2)}%</td><td>${r.tiktok_duration??''}</td></tr>`;
+        const topTbl = document.getElementById('topTable'); topTbl.innerHTML = top.length? `<thead><tr><th>Name</th><th>Eng %</th><th>Comp %</th><th>Dur (s)</th></tr></thead><tbody>${top.map(row).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
+        const worstTbl = document.getElementById('worstTable'); worstTbl.innerHTML = worst.length? `<thead><tr><th>Name</th><th>Eng %</th><th>Comp %</th><th>Dur (s)</th></tr></thead><tbody>${worst.map(row).join('')}</tbody>` : '<em class="text-white/60">No data</em>';
+      }
+
+      function renderExecutive(bundle) {
+        const md = bundle.executive_report_md || '';
+        document.getElementById('executiveMd').innerHTML = md ? marked.parse(md) : '<em class="text-white/60">No report found</em>';
+      }
+
+      function showLoading() {
+        document.getElementById('loadText').textContent = 'Loading';
+        document.getElementById('loadSpinner').classList.remove('hidden');
+        document.getElementById('status').innerHTML = '<div class="loading-spinner"></div> <span>Loading data...</span>';
+      }
+
+      function hideLoading() {
+        document.getElementById('loadText').textContent = 'Load Data';
+        document.getElementById('loadSpinner').classList.add('hidden');
+        document.getElementById('status').innerHTML = '<div class="w-2 h-2 bg-success-500 rounded-full"></div> <span>Data loaded</span>';
+      }
+
+      async function loadBundle() {
+        showLoading();
+        const ds = document.getElementById('datasetId').value.trim();
+        const url = ds ? `./dashboard_bundle_${ds}.json` : `./dashboard_bundle_latest.json`;
+        
+        try {
+          const res = await fetch(url);
+          const bundle = await res.json();
+          
+          drawExecutiveSummary(bundle);
+          drawKPIs(bundle);
+          drawDailyTrend(bundle);
+          drawHourly(bundle);
+          drawDaily(bundle);
+          drawHourlyHeatmap(bundle);
+          drawWeekendWeekday(bundle);
+          drawBrands(bundle);
+          drawContent(bundle);
+          drawEngagementBenchmark(bundle);
+          drawBrandCompletion(bundle);
+          drawBrandPerformanceMatrix(bundle);
+          drawBrandContribution(bundle);
+          drawDurationPerformance(bundle);
+          drawContentDistribution(bundle);
+          drawDurationVsEngagement(bundle);
+          drawEngagementDistribution(bundle);
+          drawCompletionRateAnalysis(bundle);
+          drawPerformanceBenchmarks(bundle);
+          renderTopWorstTables(bundle);
+          renderExecutive(bundle);
+          addTooltips();
+          bindChartCanvasTooltips();
+          addChartHelpText();
+          
+          // Add all other original chart functions here...
+          
+          hideLoading();
+        } catch (e) {
+          document.getElementById('status').innerHTML = '<div class="w-2 h-2 bg-danger-500 rounded-full"></div> <span>Load failed</span>';
+          console.error('Load error:', e);
+        }
+      }
+
+      document.getElementById('loadBtn').addEventListener('click', loadBundle);
+      window.addEventListener('DOMContentLoaded', loadBundle);
+
+      // Add all remaining original chart functions here with professional styling applied...
+      
+    </script>
+  </body>
+</html>
