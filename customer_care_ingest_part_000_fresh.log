@@ -1,0 +1,165 @@
+📘 Customer Care Knowledge Graph Ingestion
+📄 Mode: merge (safe)
+🔌 Ensuring Weaviate (Docker) is running...
+🔌 Connecting to Weaviate...
+📊 Loading Customer Care data from /Users/ays/mlds_ha/data/raw/customer_care/splits/part_000.csv
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:764: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+⚠️ Could not filter existing cases: Query call with protocol GRPC search failed with message extract params: no such class with name 'CustomerCareCase' found in the schema. Check your schema files for which classes are available.
+Some weights of the model checkpoint at cardiffnlp/twitter-roberta-base-sentiment-latest were not used when initializing RobertaForSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+- This IS expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Device set to use mps:0
+⚠️ Sentiment enrichment failed: sequence item 0: expected str instance, Series found
+🔍 Extracting Customer Care entities...
+🔍 Extracting comprehensive customer care entities...
+   • Found 18 brands, 15 products
+   • Found 8 languages, 35 countries
+   • Found 0 agents, 2 customer segments
+Found: 1 platforms, 0 issue types, 16 channels, 5 priorities
+📱 Added 1 new platforms
+🏷️ All issue types already exist
+📞 Added 16 new channels
+⚡ Added 5 new priorities
+📄 Streaming 100000 Customer Care cases...
+   • Ingestion progress: 1000/100000 (1.0%)
+   • Ingestion progress: 2000/100000 (2.0%)
+   • Ingestion progress: 3000/100000 (3.0%)
+   • Ingestion progress: 4000/100000 (4.0%)
+   • Ingestion progress: 5000/100000 (5.0%)
+   • Ingestion progress: 6000/100000 (6.0%)
+   • Ingestion progress: 7000/100000 (7.0%)
+   • Ingestion progress: 8000/100000 (8.0%)
+   • Ingestion progress: 9000/100000 (9.0%)
+   • Ingestion progress: 10000/100000 (10.0%)
+   • Ingestion progress: 11000/100000 (11.0%)
+   • Ingestion progress: 12000/100000 (12.0%)
+   • Ingestion progress: 13000/100000 (13.0%)
+   • Ingestion progress: 14000/100000 (14.0%)
+   • Ingestion progress: 15000/100000 (15.0%)
+   • Ingestion progress: 16000/100000 (16.0%)
+   • Ingestion progress: 17000/100000 (17.0%)
+   • Ingestion progress: 18000/100000 (18.0%)
+   • Ingestion progress: 19000/100000 (19.0%)
+   • Ingestion progress: 20000/100000 (20.0%)
+   • Ingestion progress: 21000/100000 (21.0%)
+   • Ingestion progress: 22000/100000 (22.0%)
+   • Ingestion progress: 23000/100000 (23.0%)
+   • Ingestion progress: 24000/100000 (24.0%)
+   • Ingestion progress: 25000/100000 (25.0%)
+   • Ingestion progress: 26000/100000 (26.0%)
+   • Ingestion progress: 27000/100000 (27.0%)
+   • Ingestion progress: 28000/100000 (28.0%)
+   • Ingestion progress: 29000/100000 (29.0%)
+   • Ingestion progress: 30000/100000 (30.0%)
+   • Ingestion progress: 31000/100000 (31.0%)
+   • Ingestion progress: 32000/100000 (32.0%)
+   • Ingestion progress: 33000/100000 (33.0%)
+   • Ingestion progress: 34000/100000 (34.0%)
+   • Ingestion progress: 35000/100000 (35.0%)
+   • Ingestion progress: 36000/100000 (36.0%)
+   • Ingestion progress: 37000/100000 (37.0%)
+   • Ingestion progress: 38000/100000 (38.0%)
+   • Ingestion progress: 39000/100000 (39.0%)
+   • Ingestion progress: 40000/100000 (40.0%)
+   • Ingestion progress: 41000/100000 (41.0%)
+   • Ingestion progress: 42000/100000 (42.0%)
+   • Ingestion progress: 43000/100000 (43.0%)
+   • Ingestion progress: 44000/100000 (44.0%)
+   • Ingestion progress: 45000/100000 (45.0%)
+   • Ingestion progress: 46000/100000 (46.0%)
+   • Ingestion progress: 47000/100000 (47.0%)
+   • Ingestion progress: 48000/100000 (48.0%)
+   • Ingestion progress: 49000/100000 (49.0%)
+   • Ingestion progress: 50000/100000 (50.0%)
+   • Ingestion progress: 51000/100000 (51.0%)
+   • Ingestion progress: 52000/100000 (52.0%)
+   • Ingestion progress: 53000/100000 (53.0%)
+   • Ingestion progress: 54000/100000 (54.0%)
+   • Ingestion progress: 55000/100000 (55.0%)
+   • Ingestion progress: 56000/100000 (56.0%)
+   • Ingestion progress: 57000/100000 (57.0%)
+   • Ingestion progress: 58000/100000 (58.0%)
+   • Ingestion progress: 59000/100000 (59.0%)
+   • Ingestion progress: 60000/100000 (60.0%)
+   • Ingestion progress: 61000/100000 (61.0%)
+   • Ingestion progress: 62000/100000 (62.0%)
+   • Ingestion progress: 63000/100000 (63.0%)
+   • Ingestion progress: 64000/100000 (64.0%)
+   • Ingestion progress: 65000/100000 (65.0%)
+   • Ingestion progress: 66000/100000 (66.0%)
+   • Ingestion progress: 67000/100000 (67.0%)
+   • Ingestion progress: 68000/100000 (68.0%)
+   • Ingestion progress: 69000/100000 (69.0%)
+   • Ingestion progress: 70000/100000 (70.0%)
+   • Ingestion progress: 71000/100000 (71.0%)
+   • Ingestion progress: 72000/100000 (72.0%)
+   • Ingestion progress: 73000/100000 (73.0%)
+   • Ingestion progress: 74000/100000 (74.0%)
+   • Ingestion progress: 75000/100000 (75.0%)
+   • Ingestion progress: 76000/100000 (76.0%)
+   • Ingestion progress: 77000/100000 (77.0%)
+   • Ingestion progress: 78000/100000 (78.0%)
+   • Ingestion progress: 79000/100000 (79.0%)
+   • Ingestion progress: 80000/100000 (80.0%)
+   • Ingestion progress: 81000/100000 (81.0%)
+   • Ingestion progress: 82000/100000 (82.0%)
+   • Ingestion progress: 83000/100000 (83.0%)
+   • Ingestion progress: 84000/100000 (84.0%)
+   • Ingestion progress: 85000/100000 (85.0%)
+   • Ingestion progress: 86000/100000 (86.0%)
+   • Ingestion progress: 87000/100000 (87.0%)
+   • Ingestion progress: 88000/100000 (88.0%)
+   • Ingestion progress: 89000/100000 (89.0%)
+   • Ingestion progress: 90000/100000 (90.0%)
+   • Ingestion progress: 91000/100000 (91.0%)
+   • Ingestion progress: 92000/100000 (92.0%)
+   • Ingestion progress: 93000/100000 (93.0%)
+   • Ingestion progress: 94000/100000 (94.0%)
+   • Ingestion progress: 95000/100000 (95.0%)
+   • Ingestion progress: 96000/100000 (96.0%)
+   • Ingestion progress: 97000/100000 (97.0%)
+   • Ingestion progress: 98000/100000 (98.0%)
+   • Ingestion progress: 99000/100000 (99.0%)
+   • Ingestion progress: 100000/100000 (100.0%)
+✅ Successfully ingested 100000 cases
+✅ Customer Care knowledge graph ingestion completed!
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:764: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+✅ Customer Care ingestion completed and logged
+📁 Moved processed file: part_000.csv → data/processed/customer_care/customer_care_dataset_95c3fcb8_20250901_124649/
+🆔 Dataset ID: customer_care_dataset_95c3fcb8
+📈 Exporting Customer Care AI-agent metrics...
+📊 Generating Enhanced Customer Care AI-agent metrics...
+💾 Saved: metrics/customer_care/customer_care_dataset_overview_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_issue_type_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_channel_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_priority_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_brand_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_brand_performance_20250901_124649.csv
+💾 Saved: metrics/customer_care/customer_care_product_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_product_performance_20250901_124649.csv
+💾 Saved: metrics/customer_care/customer_care_language_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_language_performance_20250901_124649.csv
+💾 Saved: metrics/customer_care/customer_care_geographic_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_geographic_performance_20250901_124649.csv
+💾 Saved: metrics/customer_care/customer_care_agent_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_segment_performance_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_segment_performance_20250901_124649.csv
+💾 Saved: metrics/customer_care/customer_care_cross_entity_analytics_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_temporal_analytics_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_risk_analysis_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_quality_analysis_20250901_124649.json
+💾 Saved: metrics/customer_care/customer_care_top_negative_20250901_124649.json
+💥 Ingestion failed: 'EnhancedCustomerCareMetricsExporter' object has no attribute 'generate_worst_experience_cases'
+🔌 Connection closed
+Traceback (most recent call last):
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 1842, in <module>
+    main()
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 1203, in main
+    _ = metrics_exporter.export_all_metrics(df, dataset_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ays/mlds_ha/customer_care/customer_care_metrics_export.py", line 653, in export_all_metrics
+    worst_experience = self.generate_worst_experience_cases(df)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'EnhancedCustomerCareMetricsExporter' object has no attribute 'generate_worst_experience_cases'

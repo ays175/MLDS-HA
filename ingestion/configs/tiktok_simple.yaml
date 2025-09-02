@@ -1,0 +1,168 @@
+# TikTok Platform Configuration
+platform:
+  name: tiktok
+  display_name: TikTok
+  type: social
+  description: TikTok social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: TikTokPlatform
+  brand: TikTokBrand
+  content_type: TikTokContentType
+  duration_range: TikTokDurationRange
+  post: TikTokPost
+
+# Schema configuration
+schema:
+  post_fields:
+    # Identity fields
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: tiktok_profileId
+      weaviate_name: tiktok_profileId
+      type: text
+      description: TikTok profile ID
+    - name: tiktok_id
+      weaviate_name: tiktok_id
+      type: text
+      description: TikTok post ID
+    - name: tiktok_url
+      weaviate_name: tiktok_url
+      type: text
+      description: Direct link to TikTok post
+    
+    # Timing & type
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name
+    
+    # Content fields (vectorized)
+    - name: tiktok_content
+      weaviate_name: tiktok_content
+      type: text
+      vectorize: true
+      description: Post text content
+    - name: tiktok_post_labels_names
+      weaviate_name: tiktok_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary
+    
+    # TikTok specific
+    - name: duration_seconds
+      weaviate_name: duration_seconds
+      type: number
+      description: Video duration in seconds
+    - name: duration_range
+      weaviate_name: duration_range
+      type: text
+      description: Categorized duration range
+    
+    # Metrics fields
+    - name: comments
+      weaviate_name: comments
+      type: number
+      description: Number of comments
+    - name: impressions
+      weaviate_name: impressions
+      type: number
+      description: Total impressions
+    - name: likes
+      weaviate_name: likes
+      type: number
+      description: Total likes
+    - name: shares
+      weaviate_name: shares
+      type: number
+      description: Share count
+    - name: video_views
+      weaviate_name: video_views
+      type: number
+      description: Video view count
+    - name: completion_rate
+      weaviate_name: completion_rate
+      type: number
+      description: Video completion rate
+    
+    # Sentiment
+    - name: tiktok_sentiment
+      weaviate_name: tiktok_sentiment
+      type: number
+      description: Aggregate sentiment score
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: tiktok_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: tiktok_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+  
+  duration_ranges:
+    - name: "0-15s"
+      min_seconds: 0
+      max_seconds: 15
+      description: "Ultra-short content"
+    - name: "16-30s"
+      min_seconds: 16
+      max_seconds: 30
+      description: "Short-form content"
+    - name: "31-60s"
+      min_seconds: 31
+      max_seconds: 60
+      description: "Standard content"
+    - name: "60s+"
+      min_seconds: 61
+      max_seconds: 999999
+      description: "Long-form content"
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - tiktok_content
+    - tiktok_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: tiktok_content
+    fallback_field: content_summary
+    target_field: tiktok_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+    extract_attachments: true
+
+# Ingestion tracking
+tracking:
+  log_file: data/tiktok_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: tiktok.tiktok_metrics_export.TikTokMetricsExporter
+  output_dir: metrics/tiktok

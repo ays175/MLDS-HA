@@ -1,0 +1,111 @@
+# Global Configuration for MLDS Platform
+# This file provides default values that can be overridden by environment variables
+
+processing:
+  # Batch processing settings
+  batch_size: 1000
+  sentiment_threshold: 0.8
+  semantic_min_documents: 100
+  max_topics: 50
+  topic_quality_threshold: 0.3
+  
+  # Processing modes
+  default_mode: "fast"  # fast or full
+  
+  # Timeouts (seconds)
+  sentiment_timeout: 300
+  semantic_timeout: 1800
+
+weaviate:
+  # Connection settings
+  host: "localhost"
+  port: 8080
+  grpc_port: 50051
+  timeout: 30
+  
+  # Performance settings
+  batch_size: 100
+  max_connections: 10
+
+paths:
+  # Directory paths (relative to project root)
+  data_dir: "data"
+  metrics_dir: "metrics"
+  insights_dir: "insights"
+  temp_dir: "/tmp/mlds"
+  
+  # File patterns
+  ingestion_log_pattern: "{platform}_ingestion_log.json"
+  metrics_pattern: "{platform}_metrics_{timestamp}.json"
+
+models:
+  # Sentiment analysis
+  sentiment_model: "cardiffnlp/twitter-roberta-base-sentiment-latest"
+  sentiment_device: "mps"  # mps, cuda, cpu
+  
+  # Embeddings and clustering
+  embedding_model: "all-MiniLM-L6-v2"
+  clustering_algorithm: "kmeans"
+  max_clusters: 20
+  
+  # Topic modeling
+  topic_model: "tfidf"
+  min_topic_size: 10
+
+collections:
+  # Weaviate collection names
+  facebook: "FacebookPost"
+  instagram: "InstagramPost"
+  tiktok: "TikTokPost"
+  customer_care: "CustomerCareCase"
+  
+  # Semantic collections
+  semantic_topic: "SemanticTopic"
+  topic_alignment: "SemanticTopicAlignment"
+  post_topic_mapping: "PostTopicMapping"
+
+# Platform-specific overrides
+platforms:
+  facebook:
+    text_field: "facebook_content"
+    id_field: "facebook_id"
+    
+  instagram:
+    text_field: "instagram_content"
+    id_field: "instagram_id"
+    
+  tiktok:
+    text_field: "text"
+    id_field: "post_id"
+    
+  customer_care:
+    text_field: "content_summary"
+    id_field: "case_id"
+
+# Entity resolution configuration
+entity_resolution:
+  similarity_threshold: 0.8
+  confidence_threshold: 0.8
+  auto_resolve_threshold: 0.9
+  
+  # Conflict handling
+  manual_review_required: true
+  conflict_output_dir: "data/entity_conflicts"
+
+# Quality monitoring configuration
+monitoring:
+  min_sentiment_coverage: 80  # Minimum % of records with sentiment
+  min_semantic_coverage: 50   # Minimum % of records with semantic analysis
+  max_pending_records: 10000  # Alert if more than this many records pending
+  
+  # Health check intervals
+  health_check_frequency: "daily"
+  alert_thresholds:
+    critical_failure_rate: 10  # % of jobs failing
+    slow_processing_hours: 48  # Alert if processing takes longer
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/mlds.log"

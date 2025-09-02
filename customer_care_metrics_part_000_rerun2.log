@@ -1,0 +1,50 @@
+📘 Customer Care Knowledge Graph Ingestion
+📄 Mode: merge (safe)
+🔌 Ensuring Weaviate (Docker) is running...
+🔌 Connecting to Weaviate...
+📊 Loading Customer Care data from /Users/ays/mlds_ha/data/processed/customer_care/customer_care_dataset_95c3fcb8_20250901_124835/part_000.csv
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:764: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+🔍 Filtered out 100000 existing cases before processing
+📄 All cases already exist - skipping processing
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:764: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+✅ Customer Care ingestion completed and logged
+📁 Moved processed file: part_000.csv → data/processed/customer_care/customer_care_dataset_95c3fcb8_20250901_124951/
+🆔 Dataset ID: customer_care_dataset_95c3fcb8
+📈 Exporting Customer Care AI-agent metrics...
+📊 Generating Enhanced Customer Care AI-agent metrics...
+💾 Saved: metrics/customer_care/customer_care_dataset_overview_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_issue_type_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_channel_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_priority_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_brand_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_brand_performance_20250901_124951.csv
+💾 Saved: metrics/customer_care/customer_care_product_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_product_performance_20250901_124951.csv
+💾 Saved: metrics/customer_care/customer_care_language_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_language_performance_20250901_124951.csv
+💾 Saved: metrics/customer_care/customer_care_geographic_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_geographic_performance_20250901_124951.csv
+💾 Saved: metrics/customer_care/customer_care_agent_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_segment_performance_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_segment_performance_20250901_124951.csv
+💾 Saved: metrics/customer_care/customer_care_cross_entity_analytics_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_temporal_analytics_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_risk_analysis_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_quality_analysis_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_top_negative_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_worst_experience_20250901_124951.json
+💾 Saved: metrics/customer_care/customer_care_best_experience_20250901_124951.json
+💥 Ingestion failed: 'EnhancedCustomerCareMetricsExporter' object has no attribute 'generate_enhanced_escalation_analytics'
+🔌 Connection closed
+Traceback (most recent call last):
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 1842, in <module>
+    main()
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 1203, in main
+    _ = metrics_exporter.export_all_metrics(df, dataset_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ays/mlds_ha/customer_care/customer_care_metrics_export.py", line 660, in export_all_metrics
+    escalation = self.generate_enhanced_escalation_analytics(df)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'EnhancedCustomerCareMetricsExporter' object has no attribute 'generate_enhanced_escalation_analytics'

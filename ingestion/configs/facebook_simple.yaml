@@ -1,0 +1,130 @@
+# Facebook Platform Configuration
+platform:
+  name: facebook
+  display_name: Facebook
+  type: social
+  description: Facebook social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: FacebookPlatform
+  brand: FacebookBrand
+  content_type: FacebookContentType
+  post: FacebookPost
+
+# Schema configuration
+schema:
+  post_fields:
+    # Identity fields
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: facebook_profileId
+      weaviate_name: facebook_profileId
+      type: text
+      description: Facebook profile ID
+    - name: facebook_id
+      weaviate_name: facebook_id
+      type: text
+      description: Facebook post ID
+    - name: facebook_url
+      weaviate_name: facebook_url
+      type: text
+      description: Direct link to Facebook post
+    
+    # Timing & type
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name
+    
+    # Content fields (vectorized)
+    - name: facebook_content
+      weaviate_name: facebook_content
+      type: text
+      vectorize: true
+      description: Post text content
+    - name: facebook_post_labels_names
+      weaviate_name: facebook_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary
+    
+    # Metrics fields
+    - name: facebook_comments
+      weaviate_name: facebook_comments
+      type: number
+      description: Number of comments
+    - name: facebook_interactions
+      weaviate_name: facebook_interactions
+      type: number
+      description: Total interactions
+    - name: facebook_reactions
+      weaviate_name: facebook_reactions
+      type: number
+      description: Total reactions
+    - name: facebook_shares
+      weaviate_name: facebook_shares
+      type: number
+      description: Share count
+    
+    # Sentiment
+    - name: facebook_sentiment
+      weaviate_name: facebook_sentiment
+      type: number
+      description: Aggregate sentiment score
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: facebook_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: facebook_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - facebook_content
+    - facebook_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: facebook_content
+    fallback_field: content_summary
+    target_field: facebook_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+
+# Ingestion tracking
+tracking:
+  log_file: data/facebook_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: facebook.facebook_metrics_export.FacebookMetricsExporter
+  output_dir: metrics/facebook

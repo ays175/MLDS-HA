@@ -1,0 +1,407 @@
+# Customer Care Platform Configuration - COMPLETE
+platform:
+  name: customer_care
+  display_name: Customer Care
+  type: support
+  description: Customer care support system
+
+# Weaviate Collection Names
+collections:
+  platform: CustomerCarePlatform
+  issue_type: CustomerCareIssueType
+  channel: CustomerCareChannel
+  priority: CustomerCarePriority
+  brand: CustomerCareBrand
+  product: CustomerCareProduct
+  language: CustomerCareLanguage
+  country: CustomerCareCountry
+  agent: CustomerCareAgent
+  segment: CustomerCareSegment
+  resolution_category: CustomerCareResolutionCategory
+  time_period: CustomerCareTimePeriod
+  case: CustomerCareCase
+
+# Complete Schema Configuration
+schema:
+  # Case collection fields - COMPLETE LIST
+  case_fields:
+    # Core identifiers
+    - name: case_id
+      weaviate_name: case_id
+      type: text
+      description: Unique case identifier
+    - name: case_number
+      weaviate_name: case_number
+      type: text
+      description: Human-readable case number
+    - name: contact_id
+      weaviate_name: contact_id
+      type: text
+      description: Customer contact ID
+    - name: account_id
+      weaviate_name: account_id
+      type: text
+      description: Customer account ID
+    - name: dataset_id
+      weaviate_name: dataset_id
+      type: text
+      description: Dataset identifier for tracking
+    
+    # Case metadata
+    - name: origin
+      weaviate_name: origin
+      type: text
+      description: Case origin channel
+    - name: priority
+      weaviate_name: priority
+      type: text
+      description: Case priority level
+    - name: reason
+      weaviate_name: reason
+      type: text
+      description: Case reason category
+    - name: status
+      weaviate_name: status
+      type: text
+      description: Current case status
+    - name: is_escalated
+      weaviate_name: is_escalated
+      type: boolean
+      description: Escalation flag
+    
+    # Text content (vectorized)
+    - name: subject
+      weaviate_name: subject
+      type: text
+      vectorize: true
+      description: Case subject
+    - name: description
+      weaviate_name: description
+      type: text
+      vectorize: true
+      description: Case description
+    - name: comments
+      weaviate_name: comments
+      type: text
+      vectorize: true
+      description: Resolution comments
+    - name: resolution
+      weaviate_name: resolution
+      type: text
+      vectorize: true
+      description: Resolution details
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: Combined searchable content
+    - name: keywords
+      weaviate_name: keywords
+      type: text
+      vectorize: true
+      description: Extracted keywords
+    
+    # Enhanced entity extraction results
+    - name: brands_mentioned
+      weaviate_name: brands_mentioned
+      type: text
+      description: Comma-separated detected brands
+    - name: products_mentioned
+      weaviate_name: products_mentioned
+      type: text
+      description: Comma-separated detected products
+    - name: detected_language
+      weaviate_name: detected_language
+      type: text
+      description: Detected communication language(s)
+    - name: derived_country
+      weaviate_name: derived_country
+      type: text
+      description: Country derived from phone/text
+    - name: customer_segment_derived
+      weaviate_name: customer_segment_derived
+      type: text
+      description: Derived customer segment
+    
+    # Customer information
+    - name: supplied_name
+      weaviate_name: supplied_name
+      type: text
+      description: Customer provided name
+    - name: supplied_phone
+      weaviate_name: supplied_phone
+      type: text
+      description: Customer provided phone
+    - name: customer_id
+      weaviate_name: customer_id
+      type: text
+      description: Customer identifier
+    - name: agent_id
+      weaviate_name: agent_id
+      type: text
+      description: Agent who handled the case
+    
+    # Temporal information
+    - name: created_date
+      weaviate_name: created_date
+      type: date
+      description: Case creation datetime
+    - name: last_modified_date
+      weaviate_name: last_modified_date
+      type: date
+      description: Last modification datetime
+    - name: resolved_date
+      weaviate_name: resolved_date
+      type: date
+      description: When case was resolved
+    - name: hour_created
+      weaviate_name: hour_created
+      type: number
+      description: Hour when case was created (0-23)
+    - name: day_of_week
+      weaviate_name: day_of_week
+      type: text
+      description: Day of week when created
+    - name: is_business_hours
+      weaviate_name: is_business_hours
+      type: boolean
+      description: Created during business hours
+    - name: is_weekend
+      weaviate_name: is_weekend
+      type: boolean
+      description: Created during weekend
+    
+    # Time metrics
+    - name: response_time_hours
+      weaviate_name: response_time_hours
+      type: number
+      description: Time to first response
+    - name: resolution_time_hours
+      weaviate_name: resolution_time_hours
+      type: number
+      description: Time to resolution in hours
+    
+    # Analysis scores
+    - name: sentiment_score
+      weaviate_name: sentiment_score
+      type: number
+      description: Customer sentiment (-1 to 1)
+    - name: urgency_score
+      weaviate_name: urgency_score
+      type: number
+      description: Urgency score (0-1)
+    - name: issue_category
+      weaviate_name: issue_category
+      type: text
+      description: ML-derived issue category
+    - name: customer_satisfaction
+      weaviate_name: customer_satisfaction
+      type: number
+      description: CSAT score (1-5)
+    - name: satisfaction_score
+      weaviate_name: satisfaction_score
+      type: number
+      description: Customer satisfaction rating
+    
+    # Enhanced analysis metrics
+    - name: complexity_score
+      weaviate_name: complexity_score
+      type: number
+      description: Case complexity (0-5)
+    - name: risk_score
+      weaviate_name: risk_score
+      type: number
+      description: Escalation risk score (0-5)
+    - name: text_length
+      weaviate_name: text_length
+      type: number
+      description: Total content character count
+    - name: word_count
+      weaviate_name: word_count
+      type: number
+      description: Total word count
+    - name: interaction_count
+      weaviate_name: interaction_count
+      type: number
+      description: Number of customer interactions
+    
+    # Social media correlation
+    - name: related_social_posts
+      weaviate_name: related_social_posts
+      type: text_array
+      description: Related social media post IDs
+    - name: social_mention_detected
+      weaviate_name: social_mention_detected
+      type: boolean
+      description: Public social mention detected
+    - name: social_platforms_mentioned
+      weaviate_name: social_platforms_mentioned
+      type: text_array
+      description: Social platforms mentioned
+    
+    # Case type fields
+    - name: issue_type
+      weaviate_name: issue_type
+      type: text
+      description: Type of issue
+    - name: channel
+      weaviate_name: channel
+      type: text
+      description: Communication channel
+    
+    # Entity relationship UUIDs
+    - name: platform
+      weaviate_name: platform
+      type: text
+      description: Platform UUID
+    - name: issue_types
+      weaviate_name: issue_types
+      type: text_array
+      description: Issue type UUIDs
+    - name: channel_ref
+      weaviate_name: channel
+      type: text
+      description: Channel UUID
+    - name: priority_ref
+      weaviate_name: priority_ref
+      type: text
+      description: Priority UUID
+    - name: brands
+      weaviate_name: brands
+      type: text_array
+      description: Brand entity UUIDs
+    - name: products
+      weaviate_name: products
+      type: text_array
+      description: Product entity UUIDs
+    - name: languages
+      weaviate_name: languages
+      type: text_array
+      description: Language entity UUIDs
+    - name: country
+      weaviate_name: country
+      type: text
+      description: Country entity UUID
+    - name: agent_ref
+      weaviate_name: agent
+      type: text
+      description: Agent entity UUID
+    - name: customer_segment
+      weaviate_name: customer_segment
+      type: text
+      description: Customer segment UUID
+    - name: resolution_category
+      weaviate_name: resolution_category
+      type: text
+      description: Resolution category UUID
+    - name: time_periods
+      weaviate_name: time_periods
+      type: text_array
+      description: Applicable time period UUIDs
+    - name: issue_type_ref
+      weaviate_name: issue_type_ref
+      type: text
+      description: Issue type reference UUID
+
+# Entity extraction configuration
+entities:
+  issue_type_extraction:
+    source_field: issue_type
+    type: issue_type
+  
+  channel_extraction:
+    source_field: channel
+    type: channel
+  
+  priority_extraction:
+    source_field: priority
+    type: priority
+  
+  brand_extraction:
+    source_fields:
+      - subject
+      - description
+      - resolution
+    patterns:
+      - '\b(Sephora|Benefit|Fenty|Charlotte Tilbury|Urban Decay|Dior|MAC)\b'
+    type: brand
+  
+  product_extraction:
+    source_fields:
+      - subject
+      - description
+      - resolution
+    patterns:
+      - 'product:\s*([^,\n]+)'
+      - '\b(foundation|lipstick|mascara|serum|moisturizer|eyeshadow|concealer)\b'
+    type: product
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - subject
+    - description
+    - resolution
+    - comments
+    - customer_comments
+    - agent_notes
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: content_summary
+    fallback_fields:
+      - description
+      - subject
+    target_field: sentiment_score
+    batch_size: 128
+
+  # Semantic Analysis Configuration  
+  semantic_analysis:
+    enabled: true
+    min_documents: 100
+    max_topics: 50
+    topic_quality_threshold: 0.2
+    sample_size: 1500000  # Use full dataset for Customer Care (1M+ records)
+  
+  content_enrichment:
+    generate_summary: true
+    detect_language: true
+    extract_brands: true
+    extract_products: true
+    infer_country: true
+    compute_escalation_insights: true
+
+# Special processing for customer care
+customer_care_specific:
+  escalation_detection:
+    keywords:
+      - urgent
+      - manager
+      - escalate
+      - complaint
+      - unresolved
+      - emergency
+      - critical
+      - asap
+      - immediately
+    priority_threshold: high
+  
+  origin_mapping:
+    email: Email
+    phone: Phone
+    chat: Chat
+    social: Social Media
+    store: In-Store
+    web: Web Form
+    app: Mobile App
+
+# Ingestion tracking
+tracking:
+  log_file: data/customer_care_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: customer_care.customer_care_metrics_export.CustomerCareMetricsExporter
+  output_dir: metrics/customer_care

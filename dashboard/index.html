@@ -1130,7 +1130,13 @@
       tiktokGaugeViral: 'Viral Performance',
       tiktokKpiRadar: 'Overall Performance'
     };
-    
+    function normalizeKpiLabel(label){
+      const t = String(label||'').trim();
+      if(t === 'Eng. Rate') return 'Engagement Rate';
+      if(t === 'Completion/Story') return 'Avg Completion/Story';
+      return t;
+    }
+
     function attachCanvasTooltip(canvas){ 
       const card = canvas.closest('.card'); 
       if(!card) return; 
@@ -1141,6 +1147,16 @@
       canvas.style.cursor = 'help'; 
       canvas.addEventListener('mouseenter', function(){ showTooltipAtCanvas(canvas, txt); }); 
       canvas.addEventListener('mouseleave', hideTooltip); 
+    }
+
+    function attachCardTooltipByTitle(card){ 
+      const title = card.querySelector('h3'); 
+      if(!title) return; 
+      const txt = helpText[title.textContent.trim()]; 
+      if(!txt) return; 
+      title.style.cursor = 'help'; 
+      title.addEventListener('mouseenter', function(){ showTooltipAtElement(title, txt); }); 
+      title.addEventListener('mouseleave', hideTooltip); 
     }
 
     function renderPortalExecutiveSummary(bundle){
@@ -2348,8 +2364,13 @@
       drawBenchmarks(prefix, demoBundle, 'average_completion_or_story_rate');
       renderTopWorstTables(prefix, demoBundle);
       
-      document.querySelectorAll(`#page-${prefix} .chart-container canvas, #page-${prefix} .chart-container-small canvas`).forEach(function(c){ attachCanvasTooltip(c); });
-      document.querySelectorAll(`#page-${prefix} .card`).forEach(function(card){ attachCardTooltipByTitle(card); });
+      // Attach enhanced tooltips for demo data with proper timing
+      setTimeout(() => {
+        attachKpiTooltips(prefix);
+        attachExecutiveSummaryTooltips(prefix);
+        document.querySelectorAll(`#page-${prefix} .chart-container canvas, #page-${prefix} .chart-container-small canvas`).forEach(function(c){ attachCanvasTooltip(c); });
+        document.querySelectorAll(`#page-${prefix} .card`).forEach(function(card){ attachCardTooltipByTitle(card); });
+      }, 100);
     }
 
     // Enhanced page navigation with smooth transitions

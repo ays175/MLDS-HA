@@ -1,0 +1,273 @@
+# Instagram Platform Configuration - COMPLETE
+platform:
+  name: instagram
+  display_name: Instagram
+  type: social
+  description: Instagram social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: InstagramPlatform
+  brand: InstagramBrand
+  content_type: InstagramContentType
+  post: InstagramPost
+
+# Complete Schema Configuration
+schema:
+  # Platform collection fields
+  platform_fields:
+    - name: name
+      type: text
+      description: Platform name
+    - name: type
+      type: text
+      description: Platform type
+    - name: description
+      type: text
+      description: Platform description
+  
+  # Brand collection fields
+  brand_fields:
+    - name: name
+      type: text
+      description: Brand name
+    - name: type
+      type: text
+      description: Brand type
+    - name: platform
+      type: text
+      description: Associated platform
+  
+  # Content type collection fields
+  content_type_fields:
+    - name: name
+      type: text
+      description: Content type name
+    - name: type
+      type: text
+      description: Category type (axis, asset, etc.)
+    - name: platform
+      type: text
+      description: Platform
+  
+  # Post collection fields - COMPLETE LIST
+  fields:
+    # Identity fields
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: instagram_profileId
+      weaviate_name: instagram_profileId
+      type: text
+      description: Instagram profile ID
+    - name: instagram_id
+      weaviate_name: instagram_id
+      type: text
+      description: Instagram post ID
+    - name: instagram_url
+      weaviate_name: instagram_url
+      type: text
+      description: Direct link to Instagram post
+    
+    # Timing & type
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type (post, reel, story, carousel, etc.)
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name (instagram)
+    
+    # Content fields (vectorized)
+    - name: instagram_content
+      weaviate_name: instagram_content
+      type: text
+      vectorize: true
+      description: Post text/content
+    - name: instagram_post_labels_names
+      weaviate_name: instagram_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: labels_text
+      weaviate_name: labels_text
+      type: text
+      vectorize: true
+      description: Content labels as searchable text
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary for semantic search
+    
+    # Non-vectorized content fields
+    - name: instagram_post_labels
+      weaviate_name: instagram_post_labels
+      type: text
+      description: Raw labels JSON
+    - name: instagram_attachments
+      weaviate_name: instagram_attachments
+      type: text
+      description: Attachments JSON (title, url, image_url, type)
+    
+    # Sentiment and comments
+    - name: instagram_comments
+      weaviate_name: instagram_comments
+      type: number
+      description: Number of comments
+    - name: instagram_comments_sentiment
+      weaviate_name: instagram_comments_sentiment
+      type: text
+      description: Comments sentiment JSON {positive,neutral,negative}
+    - name: instagram_sentiment
+      weaviate_name: instagram_sentiment
+      type: number
+      description: Aggregate sentiment score if available
+    
+    # Interaction breakdown
+    - name: instagram_interactions
+      weaviate_name: instagram_interactions
+      type: number
+      description: Total interactions
+    - name: instagram_media_type
+      weaviate_name: instagram_media_type
+      type: text
+      description: Media type (photo, video, reel, story, carousel)
+    - name: instagram_likes
+      weaviate_name: instagram_likes
+      type: number
+      description: Like count
+    - name: instagram_insights_saves
+      weaviate_name: instagram_insights_saves
+      type: number
+      description: Saves (from insights)
+    - name: instagram_shares
+      weaviate_name: instagram_shares
+      type: number
+      description: Share count (if available)
+    - name: instagram_insights_post_clicks
+      weaviate_name: instagram_insights_post_clicks
+      type: number
+      description: Post clicks (if available)
+    - name: instagram_reactions
+      weaviate_name: instagram_reactions
+      type: number
+      description: Total reactions (if available)
+    
+    # Insights metrics
+    - name: instagram_insights_engagement
+      weaviate_name: instagram_insights_engagement
+      type: number
+      description: Insights engagement
+    - name: instagram_insights_impressions
+      weaviate_name: instagram_insights_impressions
+      type: number
+      description: Insights impressions
+    - name: instagram_insights_reach
+      weaviate_name: instagram_insights_reach
+      type: number
+      description: Insights reach
+    - name: instagram_insights_video_views
+      weaviate_name: instagram_insights_video_views
+      type: number
+      description: Insights video views
+    - name: instagram_insights_story_completion_rate
+      weaviate_name: instagram_insights_story_completion_rate
+      type: number
+      description: Story completion rate (%)
+    
+    # Calculated Metrics
+    - name: engagement_rate
+      weaviate_name: engagement_rate
+      type: number
+      description: Engagement rate (%)
+    - name: view_rate
+      weaviate_name: view_rate
+      type: number
+      description: View rate from impressions (%)
+    - name: like_rate
+      weaviate_name: like_rate
+      type: number
+      description: Like rate from impressions (%)
+    - name: comment_rate
+      weaviate_name: comment_rate
+      type: number
+      description: Comment rate from impressions (%)
+    - name: save_rate
+      weaviate_name: save_rate
+      type: number
+      description: Save rate from impressions (%)
+    - name: share_rate
+      weaviate_name: share_rate
+      type: number
+      description: Share rate from impressions (%)
+    - name: click_rate
+      weaviate_name: click_rate
+      type: number
+      description: Click rate from impressions (%)
+    - name: reaction_rate
+      weaviate_name: reaction_rate
+      type: number
+      description: Reaction rate from impressions (%)
+    
+    # Relationships (stored as UUIDs)
+    - name: platform
+      weaviate_name: platform
+      type: text
+      description: Platform UUID
+    - name: brands
+      weaviate_name: brands
+      type: text_array
+      description: Brand UUIDs
+    - name: content_types
+      weaviate_name: content_types
+      type: text_array
+      description: Content type UUIDs
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: instagram_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: instagram_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - instagram_content
+    - instagram_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: instagram_content
+    fallback_field: content_summary
+    target_field: instagram_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+    extract_attachments: true
+
+# Ingestion tracking
+tracking:
+  log_file: data/instagram_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: instagram.instagram_metrics_export.InstagramMetricsExporter
+  output_dir: metrics/instagram

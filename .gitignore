@@ -4,9 +4,18 @@ Parsers/
 data/processed/
 data/raw/
 insights/
+/Users/ays/mlds_ha/rag
 metrics/
+
 # Added: ignore dashboard bundles and local env/artifacts
 dashboard/*.json
 dashboard/**/*.json
 .env
 .DS_Store
+# Python cache
+__pycache__/
+*.pyc
+# Data logs
+/data/*.json
+/Users/ays/mlds_ha/data
+

@@ -1,0 +1,130 @@
+# Instagram Platform Configuration
+platform:
+  name: instagram
+  display_name: Instagram
+  type: social
+  description: Instagram social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: InstagramPlatform
+  brand: InstagramBrand
+  content_type: InstagramContentType
+  post: InstagramPost
+
+# Schema configuration
+schema:
+  post_fields:
+    # Identity fields
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: instagram_profileId
+      weaviate_name: instagram_profileId
+      type: text
+      description: Instagram profile ID
+    - name: instagram_id
+      weaviate_name: instagram_id
+      type: text
+      description: Instagram post ID
+    - name: instagram_link
+      weaviate_name: instagram_link
+      type: text
+      description: Direct link to Instagram post
+    
+    # Timing & type
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name
+    
+    # Content fields (vectorized)
+    - name: instagram_content
+      weaviate_name: instagram_content
+      type: text
+      vectorize: true
+      description: Post text content
+    - name: instagram_post_labels_names
+      weaviate_name: instagram_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary
+    
+    # Metrics fields
+    - name: instagram_comments
+      weaviate_name: instagram_comments
+      type: number
+      description: Number of comments
+    - name: instagram_interactions
+      weaviate_name: instagram_interactions
+      type: number
+      description: Total interactions
+    - name: instagram_likes
+      weaviate_name: instagram_likes
+      type: number
+      description: Total likes
+    - name: instagram_saved
+      weaviate_name: instagram_saved
+      type: number
+      description: Save count
+    
+    # Sentiment
+    - name: instagram_sentiment
+      weaviate_name: instagram_sentiment
+      type: number
+      description: Aggregate sentiment score
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: instagram_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: instagram_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - instagram_content
+    - instagram_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: instagram_content
+    fallback_field: content_summary
+    target_field: instagram_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+
+# Ingestion tracking
+tracking:
+  log_file: data/instagram_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: instagram.instagram_metrics_export.InstagramMetricsExporter
+  output_dir: metrics/instagram

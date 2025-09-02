@@ -1,0 +1,216 @@
+# Customer Care Platform Configuration
+platform:
+  name: customer_care
+  display_name: Customer Care
+  type: support
+  description: Customer care support system
+
+# Weaviate Collection Names
+collections:
+  issue_type: CustomerCareIssueType
+  channel: CustomerCareChannel
+  priority: CustomerCarePriority
+  case: CustomerCareCase
+
+# Schema configuration
+schema:
+  case_fields:
+    # Identity fields
+    - name: case_number
+      weaviate_name: case_number
+      type: text
+      description: Unique case identifier
+    - name: customer_id
+      weaviate_name: customer_id
+      type: text
+      description: Customer identifier
+    - name: agent_id
+      weaviate_name: agent_id
+      type: text
+      description: Agent who handled the case
+    
+    # Case details
+    - name: issue_type
+      weaviate_name: issue_type
+      type: text
+      description: Type of issue
+    - name: channel
+      weaviate_name: channel
+      type: text
+      description: Communication channel
+    - name: priority
+      weaviate_name: priority
+      type: text
+      description: Case priority level
+    - name: status
+      weaviate_name: status
+      type: text
+      description: Case status
+    
+    # Content fields (vectorized)
+    - name: subject
+      weaviate_name: subject
+      type: text
+      vectorize: true
+      description: Case subject
+    - name: description
+      weaviate_name: description
+      type: text
+      vectorize: true
+      description: Issue description
+    - name: resolution
+      weaviate_name: resolution
+      type: text
+      vectorize: true
+      description: Resolution details
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated summary
+    
+    # Timing
+    - name: created_date
+      weaviate_name: created_date
+      type: text
+      description: When case was created
+    - name: resolved_date
+      weaviate_name: resolved_date
+      type: text
+      description: When case was resolved
+    - name: response_time_hours
+      weaviate_name: response_time_hours
+      type: number
+      description: Time to first response
+    - name: resolution_time_hours
+      weaviate_name: resolution_time_hours
+      type: number
+      description: Total resolution time
+    
+    # Metrics
+    - name: satisfaction_score
+      weaviate_name: satisfaction_score
+      type: number
+      description: Customer satisfaction rating
+    - name: is_escalated
+      weaviate_name: is_escalated
+      type: boolean
+      description: Whether case was escalated
+    - name: interaction_count
+      weaviate_name: interaction_count
+      type: number
+      description: Number of interactions
+    
+    # Enhanced fields
+    - name: sentiment_score
+      weaviate_name: sentiment_score
+      type: number
+      description: Aggregate sentiment score
+    - name: detected_language
+      weaviate_name: detected_language
+      type: text
+      description: Detected language of content
+    - name: brands_mentioned
+      weaviate_name: brands_mentioned
+      type: text_array
+      description: Brands mentioned in case
+    - name: products_mentioned
+      weaviate_name: products_mentioned
+      type: text_array
+      description: Products mentioned in case
+    - name: origin
+      weaviate_name: origin
+      type: text
+      description: Origin channel/source
+    - name: derived_country
+      weaviate_name: derived_country
+      type: text
+      description: Inferred country
+
+# Entity extraction configuration
+entities:
+  issue_type_extraction:
+    source_field: issue_type
+    type: issue_type
+  
+  channel_extraction:
+    source_field: channel
+    type: channel
+  
+  priority_extraction:
+    source_field: priority
+    type: priority
+  
+  brand_extraction:
+    source_fields:
+      - subject
+      - description
+      - resolution
+    patterns:
+      - '\b(Sephora|Benefit|Fenty|Charlotte Tilbury|Urban Decay)\b'
+    type: brand
+  
+  product_extraction:
+    source_fields:
+      - subject
+      - description
+      - resolution
+    patterns:
+      - 'product:\s*([^,\n]+)'
+      - '\b(foundation|lipstick|mascara|serum|moisturizer)\b'
+    type: product
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - subject
+    - description
+    - resolution
+    - customer_comments
+    - agent_notes
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: content_summary
+    fallback_fields:
+      - description
+      - subject
+    target_field: sentiment_score
+    batch_size: 128
+  
+  content_enrichment:
+    generate_summary: true
+    detect_language: true
+    extract_brands: true
+    extract_products: true
+    infer_country: true
+    compute_escalation_insights: true
+
+# Special processing for customer care
+customer_care_specific:
+  escalation_detection:
+    keywords:
+      - urgent
+      - manager
+      - escalate
+      - complaint
+      - unresolved
+    priority_threshold: high
+  
+  origin_mapping:
+    email: Email
+    phone: Phone
+    chat: Chat
+    social: Social Media
+    store: In-Store
+
+# Ingestion tracking
+tracking:
+  log_file: data/customer_care_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: customer_care.customer_care_metrics_export.CustomerCareMetricsExporter
+  output_dir: metrics/customer_care

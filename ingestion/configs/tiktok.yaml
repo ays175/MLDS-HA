@@ -1,0 +1,354 @@
+# TikTok Platform Configuration - COMPLETE
+platform:
+  name: tiktok
+  display_name: TikTok
+  type: social
+  description: TikTok social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: TikTokPlatform
+  brand: TikTokBrand
+  content_type: TikTokContentType
+  duration_range: TikTokDurationRange
+  post: TikTokPost
+
+# Complete Schema Configuration
+schema:
+  # Platform collection fields
+  platform_fields:
+    - name: name
+      type: text
+      description: Platform name
+    - name: type
+      type: text
+      description: Platform type
+    - name: description
+      type: text
+      description: Platform description
+  
+  # Brand collection fields
+  brand_fields:
+    - name: name
+      type: text
+      description: Brand name
+    - name: type
+      type: text
+      description: Brand type
+    - name: platform
+      type: text
+      description: Associated platform
+  
+  # Content type collection fields
+  content_type_fields:
+    - name: name
+      type: text
+      description: Content type name
+    - name: type
+      type: text
+      description: Category type (axis, asset, etc.)
+    - name: platform
+      type: text
+      description: Platform
+  
+  # Duration range collection fields
+  duration_range_fields:
+    - name: name
+      type: text
+      description: Duration range name
+    - name: type
+      type: text
+      description: Range type
+    - name: min_duration
+      type: number
+      description: Minimum duration in seconds
+    - name: max_duration
+      type: number
+      description: Maximum duration in seconds
+    - name: post_count
+      type: number
+      description: Number of posts in this range
+  
+  # Post collection fields - COMPLETE LIST
+  fields:
+    # Identity fields
+    - name: post_id
+      weaviate_name: post_id
+      type: text
+      description: TikTok post ID
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: tiktok_link
+      weaviate_name: tiktok_link
+      type: text
+      description: Direct link to TikTok post
+    
+    # Timing fields
+    - name: posted_date
+      weaviate_name: posted_date
+      type: text
+      description: Date posted (YYYY-MM-DD)
+    - name: posted_time
+      weaviate_name: posted_time
+      type: text
+      description: Time posted (HH:MM:SS)
+    - name: weekday
+      weaviate_name: weekday
+      type: text
+      description: Day of week
+    - name: hour
+      weaviate_name: hour
+      type: number
+      description: Hour of day (0-23)
+    
+    # Media & duration
+    - name: duration
+      weaviate_name: duration
+      type: number
+      description: Video duration in seconds
+    - name: media_type
+      weaviate_name: media_type
+      type: text
+      description: Media type from attachments
+    - name: media_count
+      weaviate_name: media_count
+      type: number
+      description: Number of media items
+    
+    # Content fields (vectorized)
+    - name: labels_text
+      weaviate_name: labels_text
+      type: text
+      vectorize: true
+      description: Content labels as searchable text
+    - name: brands_text
+      weaviate_name: brands_text
+      type: text
+      vectorize: true
+      description: Extracted brand names for semantic search
+    - name: content_themes
+      weaviate_name: content_themes
+      type: text
+      vectorize: true
+      description: Content themes and axes for discovery
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary for semantic search
+    
+    # Performance metrics
+    - name: comments
+      weaviate_name: comments
+      type: number
+      description: Number of comments
+    - name: impressions
+      weaviate_name: impressions
+      type: number
+      description: Total impressions
+    - name: likes
+      weaviate_name: likes
+      type: number
+      description: Number of likes
+    - name: shares
+      weaviate_name: shares
+      type: number
+      description: Number of shares
+    - name: engagements
+      weaviate_name: engagements
+      type: number
+      description: Total engagements
+    - name: reach
+      weaviate_name: reach
+      type: number
+      description: Unique users reached
+    - name: video_views
+      weaviate_name: video_views
+      type: number
+      description: Total video views
+    - name: completion_rate
+      weaviate_name: completion_rate
+      type: number
+      description: Video completion percentage
+    
+    # Calculated metrics
+    - name: engagement_rate
+      weaviate_name: engagement_rate
+      type: number
+      description: Engagement rate (%)
+    - name: view_rate
+      weaviate_name: view_rate
+      type: number
+      description: View rate from impressions (%)
+    - name: like_rate
+      weaviate_name: like_rate
+      type: number
+      description: Like rate from views (%)
+    - name: share_rate
+      weaviate_name: share_rate
+      type: number
+      description: Share rate from views (%)
+    
+    # Relationships
+    - name: platform
+      weaviate_name: platform
+      type: text
+      description: Platform UUID
+    - name: brands
+      weaviate_name: brands
+      type: text_array
+      description: Brand UUIDs
+    - name: content_types
+      weaviate_name: content_types
+      type: text_array
+      description: Content type UUIDs
+    - name: duration_range
+      weaviate_name: duration_range
+      type: text
+      description: Duration range UUID
+    
+    # Additional fields from original schema that weren't in simplified version
+    - name: tiktok_profileId
+      weaviate_name: tiktok_profileId
+      type: text
+      description: TikTok profile ID
+    - name: tiktok_id
+      weaviate_name: tiktok_id
+      type: text
+      description: TikTok post ID
+    - name: tiktok_url
+      weaviate_name: tiktok_url
+      type: text
+      description: Direct link to TikTok post
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name
+    - name: duration_seconds
+      weaviate_name: duration_seconds
+      type: number
+      description: Video duration in seconds
+    - name: duration_range_name
+      weaviate_name: video_duration_range
+      type: text
+      description: Categorized duration range
+    - name: tiktok_content
+      weaviate_name: tiktok_content
+      type: text
+      vectorize: true
+      description: Post text content
+    - name: tiktok_post_labels_names
+      weaviate_name: tiktok_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: tiktok_sentiment
+      weaviate_name: tiktok_sentiment
+      type: number
+      description: Aggregate sentiment score
+    - name: derived_country
+      weaviate_name: derived_country
+      type: text
+      description: Country derived from account handle (@sephora[country])
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: tiktok_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: tiktok_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+  
+  country_extraction:
+    source_field: tiktok_url
+    target_field: derived_country
+    mapping:
+      "@sephora": "Global"
+      "@sephoracollection": "Global"
+      "@sephorafrance": "France"
+      "@sephoradeutschland": "Germany"
+      "@sephoraitalia": "Italy"
+      "@sephoramiddleeast": "Middle East"
+      "@sephoraspain": "Spain"
+      "@sephoraswitzerland": "Switzerland"
+      "@sephoraczechrepublic": "Czech Republic"
+      "@sephoraportugal": "Portugal"
+      "@sephorapolska": "Poland"
+      "@sephoraturkiye": "Turkey"
+      "@sephoragreece": "Greece"
+      "@sephorauk": "United Kingdom"
+      "@sephorabulgaria": "Bulgaria"
+      "@sephoraromania": "Romania"
+      "@sephorasrbija": "Serbia"
+      "@sephoracanada": "Canada"
+      "@sephorasg": "Singapore"
+  
+  duration_ranges:
+    - name: "0-15s"
+      min_seconds: 0
+      max_seconds: 15
+      description: "Ultra-short content"
+    - name: "16-30s"
+      min_seconds: 16
+      max_seconds: 30
+      description: "Short-form content"
+    - name: "31-60s"
+      min_seconds: 31
+      max_seconds: 60
+      description: "Standard content"
+    - name: "60s+"
+      min_seconds: 61
+      max_seconds: 999999
+      description: "Long-form content"
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - tiktok_content
+    - tiktok_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: tiktok_post_labels_names
+    fallback_field: content_summary
+    target_field: tiktok_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+    extract_attachments: true
+
+# Semantic Analysis Configuration
+semantic_analysis:
+  enabled: true
+  min_documents: 100        # Lower threshold for richer topics
+  max_topics: 50           # Appropriate for TikTok's content diversity
+  topic_quality_threshold: 0.2  # Lower for initial exploration
+  sample_size: 16000       # Use full dataset for TikTok (16k records)
+
+# Ingestion tracking
+tracking:
+  log_file: data/tiktok_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+metrics:
+  exporter_class: metrics.unified_metrics_export.UnifiedMetricsExporter
+  output_dir: metrics/tiktok

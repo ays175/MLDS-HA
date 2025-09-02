@@ -3,7 +3,7 @@ name = "mlds-ha"
 version = "0.1.0"
 description = "Social analytics pipelines (TikTok/Facebook), RAG indexing, and dashboards"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
   "pandas>=2.2",
   "numpy>=1.26",
@@ -12,6 +12,18 @@ dependencies = [
   "tqdm>=4.66",
   "requests>=2.31",
   "openpyxl>=3.1.5",
+  "uvicorn",
+  "fastapi",
+  "transformers>=4.56.0",
+  "torch>=2.8.0",
+  "nltk>=3.9.1",
+  "tokenizers>=0.22.0",
+  "accelerate>=1.10.1",
+  "scikit-learn>=1.4",
+  "aiohttp>=3.12.15",
+  "gensim>=4.3.3",
+  "schedule>=1.2.2",
+  "sentence-transformers>=5.1.0",
 ]
 
 [tool.uv]

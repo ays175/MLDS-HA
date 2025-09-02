@@ -1,0 +1,179 @@
+📘 Customer Care Knowledge Graph Ingestion
+🔄 Mode: merge (safe)
+🔌 Ensuring Weaviate (Docker) is running...
+🔌 Connecting to Weaviate...
+📊 Loading Customer Care data from /Users/ays/mlds_ha/data/raw/customer_care/Customer_Care_Data.csv
+Some weights of the model checkpoint at cardiffnlp/twitter-roberta-base-sentiment-latest were not used when initializing RobertaForSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+- This IS expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Device set to use mps:0
+🧠 Computing sentiment for customer care cases (ensemble)...
+   • Sentiment progress: 1024/1000000 (0.1%) | 38.6 rows/s | ETA 431.5 min
+   • Sentiment progress: 11264/1000000 (1.1%) | 38.2 rows/s | ETA 431.5 min
+   • Sentiment progress: 21504/1000000 (2.2%) | 40.5 rows/s | ETA 402.5 min
+   • Sentiment progress: 31744/1000000 (3.2%) | 39.7 rows/s | ETA 406.3 min
+   • Sentiment progress: 41984/1000000 (4.2%) | 40.0 rows/s | ETA 399.6 min
+   • Sentiment progress: 52224/1000000 (5.2%) | 40.8 rows/s | ETA 386.8 min
+   • Sentiment progress: 62464/1000000 (6.2%) | 40.3 rows/s | ETA 387.3 min
+   • Sentiment progress: 72704/1000000 (7.3%) | 40.8 rows/s | ETA 379.1 min
+   • Sentiment progress: 82944/1000000 (8.3%) | 40.9 rows/s | ETA 373.7 min
+   • Sentiment progress: 93184/1000000 (9.3%) | 40.6 rows/s | ETA 372.5 min
+   • Sentiment progress: 103424/1000000 (10.3%) | 40.9 rows/s | ETA 365.4 min
+   • Sentiment progress: 113664/1000000 (11.4%) | 40.6 rows/s | ETA 364.2 min
+   • Sentiment progress: 123904/1000000 (12.4%) | 40.6 rows/s | ETA 359.8 min
+   • Sentiment progress: 134144/1000000 (13.4%) | 40.8 rows/s | ETA 353.7 min
+   • Sentiment progress: 144384/1000000 (14.4%) | 40.4 rows/s | ETA 353.2 min
+   • Sentiment progress: 154624/1000000 (15.5%) | 40.5 rows/s | ETA 347.8 min
+   • Sentiment progress: 164864/1000000 (16.5%) | 40.5 rows/s | ETA 343.8 min
+   • Sentiment progress: 175104/1000000 (17.5%) | 40.1 rows/s | ETA 342.7 min
+   • Sentiment progress: 185344/1000000 (18.5%) | 40.2 rows/s | ETA 337.5 min
+   • Sentiment progress: 195584/1000000 (19.6%) | 40.1 rows/s | ETA 334.4 min
+   • Sentiment progress: 205824/1000000 (20.6%) | 40.0 rows/s | ETA 330.7 min
+   • Sentiment progress: 216064/1000000 (21.6%) | 40.1 rows/s | ETA 325.5 min
+   • Sentiment progress: 226304/1000000 (22.6%) | 39.8 rows/s | ETA 323.7 min
+   • Sentiment progress: 236544/1000000 (23.7%) | 39.7 rows/s | ETA 320.6 min
+   • Sentiment progress: 246784/1000000 (24.7%) | 39.5 rows/s | ETA 317.6 min
+   • Sentiment progress: 257024/1000000 (25.7%) | 39.2 rows/s | ETA 316.2 min
+   • Sentiment progress: 267264/1000000 (26.7%) | 39.2 rows/s | ETA 311.6 min
+   • Sentiment progress: 277504/1000000 (27.8%) | 39.1 rows/s | ETA 308.2 min
+   • Sentiment progress: 287744/1000000 (28.8%) | 38.9 rows/s | ETA 304.8 min
+   • Sentiment progress: 297984/1000000 (29.8%) | 39.0 rows/s | ETA 300.0 min
+   • Sentiment progress: 308224/1000000 (30.8%) | 38.8 rows/s | ETA 296.9 min
+   • Sentiment progress: 318464/1000000 (31.8%) | 38.8 rows/s | ETA 292.8 min
+   • Sentiment progress: 328704/1000000 (32.9%) | 38.8 rows/s | ETA 288.0 min
+   • Sentiment progress: 338944/1000000 (33.9%) | 38.7 rows/s | ETA 284.8 min
+   • Sentiment progress: 349184/1000000 (34.9%) | 38.7 rows/s | ETA 280.4 min
+   • Sentiment progress: 359424/1000000 (35.9%) | 38.7 rows/s | ETA 276.2 min
+   • Sentiment progress: 369664/1000000 (37.0%) | 38.6 rows/s | ETA 272.4 min
+   • Sentiment progress: 379904/1000000 (38.0%) | 38.7 rows/s | ETA 267.3 min
+   • Sentiment progress: 390144/1000000 (39.0%) | 38.6 rows/s | ETA 263.0 min
+   • Sentiment progress: 400384/1000000 (40.0%) | 38.6 rows/s | ETA 259.0 min
+   • Sentiment progress: 410624/1000000 (41.1%) | 38.7 rows/s | ETA 254.0 min
+   • Sentiment progress: 420864/1000000 (42.1%) | 38.6 rows/s | ETA 250.3 min
+   • Sentiment progress: 431104/1000000 (43.1%) | 38.6 rows/s | ETA 245.7 min
+   • Sentiment progress: 441344/1000000 (44.1%) | 38.6 rows/s | ETA 240.9 min
+   • Sentiment progress: 451584/1000000 (45.2%) | 38.6 rows/s | ETA 236.9 min
+   • Sentiment progress: 461824/1000000 (46.2%) | 38.6 rows/s | ETA 232.2 min
+   • Sentiment progress: 472064/1000000 (47.2%) | 38.7 rows/s | ETA 227.6 min
+   • Sentiment progress: 482304/1000000 (48.2%) | 38.6 rows/s | ETA 223.5 min
+   • Sentiment progress: 492544/1000000 (49.3%) | 38.7 rows/s | ETA 218.7 min
+   • Sentiment progress: 502784/1000000 (50.3%) | 38.6 rows/s | ETA 214.5 min
+   • Sentiment progress: 513024/1000000 (51.3%) | 38.6 rows/s | ETA 210.2 min
+   • Sentiment progress: 523264/1000000 (52.3%) | 38.6 rows/s | ETA 205.7 min
+   • Sentiment progress: 533504/1000000 (53.4%) | 38.5 rows/s | ETA 201.9 min
+   • Sentiment progress: 543744/1000000 (54.4%) | 38.5 rows/s | ETA 197.4 min
+   • Sentiment progress: 553984/1000000 (55.4%) | 38.5 rows/s | ETA 193.1 min
+   • Sentiment progress: 564224/1000000 (56.4%) | 38.4 rows/s | ETA 188.9 min
+   • Sentiment progress: 574464/1000000 (57.4%) | 38.4 rows/s | ETA 184.6 min
+   • Sentiment progress: 584704/1000000 (58.5%) | 38.4 rows/s | ETA 180.2 min
+   • Sentiment progress: 594944/1000000 (59.5%) | 38.4 rows/s | ETA 175.8 min
+   • Sentiment progress: 605184/1000000 (60.5%) | 38.5 rows/s | ETA 171.0 min
+   • Sentiment progress: 615424/1000000 (61.5%) | 38.4 rows/s | ETA 166.9 min
+   • Sentiment progress: 625664/1000000 (62.6%) | 38.4 rows/s | ETA 162.3 min
+   • Sentiment progress: 635904/1000000 (63.6%) | 38.4 rows/s | ETA 157.9 min
+   • Sentiment progress: 646144/1000000 (64.6%) | 38.4 rows/s | ETA 153.7 min
+   • Sentiment progress: 656384/1000000 (65.6%) | 38.4 rows/s | ETA 149.1 min
+   • Sentiment progress: 666624/1000000 (66.7%) | 38.4 rows/s | ETA 144.9 min
+   • Sentiment progress: 676864/1000000 (67.7%) | 38.3 rows/s | ETA 140.5 min
+   • Sentiment progress: 687104/1000000 (68.7%) | 38.4 rows/s | ETA 135.9 min
+   • Sentiment progress: 697344/1000000 (69.7%) | 38.3 rows/s | ETA 131.7 min
+   • Sentiment progress: 707584/1000000 (70.8%) | 38.3 rows/s | ETA 127.2 min
+   • Sentiment progress: 717824/1000000 (71.8%) | 38.3 rows/s | ETA 122.8 min
+   • Sentiment progress: 728064/1000000 (72.8%) | 38.3 rows/s | ETA 118.4 min
+   • Sentiment progress: 738304/1000000 (73.8%) | 38.3 rows/s | ETA 113.9 min
+   • Sentiment progress: 748544/1000000 (74.9%) | 38.3 rows/s | ETA 109.5 min
+   • Sentiment progress: 758784/1000000 (75.9%) | 38.2 rows/s | ETA 105.1 min
+   • Sentiment progress: 769024/1000000 (76.9%) | 38.3 rows/s | ETA 100.6 min
+   • Sentiment progress: 779264/1000000 (77.9%) | 38.2 rows/s | ETA 96.3 min
+   • Sentiment progress: 789504/1000000 (79.0%) | 38.2 rows/s | ETA 91.7 min
+   • Sentiment progress: 799744/1000000 (80.0%) | 38.2 rows/s | ETA 87.3 min
+   • Sentiment progress: 809984/1000000 (81.0%) | 38.2 rows/s | ETA 82.9 min
+   • Sentiment progress: 820224/1000000 (82.0%) | 38.2 rows/s | ETA 78.4 min
+   • Sentiment progress: 830464/1000000 (83.0%) | 38.2 rows/s | ETA 74.0 min
+   • Sentiment progress: 840704/1000000 (84.1%) | 38.2 rows/s | ETA 69.6 min
+   • Sentiment progress: 850944/1000000 (85.1%) | 38.2 rows/s | ETA 65.1 min
+   • Sentiment progress: 861184/1000000 (86.1%) | 38.1 rows/s | ETA 60.7 min
+   • Sentiment progress: 871424/1000000 (87.1%) | 38.1 rows/s | ETA 56.2 min
+   • Sentiment progress: 881664/1000000 (88.2%) | 38.1 rows/s | ETA 51.8 min
+   • Sentiment progress: 891904/1000000 (89.2%) | 38.1 rows/s | ETA 47.3 min
+   • Sentiment progress: 902144/1000000 (90.2%) | 38.1 rows/s | ETA 42.8 min
+   • Sentiment progress: 912384/1000000 (91.2%) | 38.0 rows/s | ETA 38.4 min
+   • Sentiment progress: 922624/1000000 (92.3%) | 38.0 rows/s | ETA 33.9 min
+   • Sentiment progress: 932864/1000000 (93.3%) | 38.3 rows/s | ETA 29.2 min
+   • Sentiment progress: 943104/1000000 (94.3%) | 38.4 rows/s | ETA 24.7 min
+   • Sentiment progress: 953344/1000000 (95.3%) | 38.7 rows/s | ETA 20.1 min
+   • Sentiment progress: 963584/1000000 (96.4%) | 38.9 rows/s | ETA 15.6 min
+   • Sentiment progress: 973824/1000000 (97.4%) | 39.1 rows/s | ETA 11.2 min
+   • Sentiment progress: 984064/1000000 (98.4%) | 39.3 rows/s | ETA 6.8 min
+   • Sentiment progress: 994304/1000000 (99.4%) | 39.5 rows/s | ETA 2.4 min
+   • Sentiment progress: 1000000/1000000 (100.0%) | 39.6 rows/s | ETA 0.0 min
+🔍 Extracting Customer Care entities...
+Found: 1 platforms, 0 issue types, 17 channels, 5 priorities
+📱 Added 1 new platforms
+🏷️ All issue types already exist
+📞 Added 17 new channels
+⚡ Added 5 new priorities
+📝 No existing cases found, processing all
+📝 Ingesting Customer Care cases...
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}
+{'message': 'Failed to send 100 objects in a batch of 100. Please inspect client.batch.failed_objects or collection.batch.failed_objects for the failed objects.'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)", grpc_status:14}"\\n>\')'}
+{'message': 'Failed to send all objects in a batch of 100', 'error': 'WeaviateRetryError(\'The request to Weaviate failed after 10 retries. Details: <_InactiveRpcError of RPC that terminated with:\\n\\tstatus = StatusCode.UNAVAILABLE\\n\\tdetails = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"\\n\\tdebug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50051: Failed to connect to remote host: connect: Connection refused (61)"}"\\n>\')'}

@@ -1,0 +1,54 @@
+📘 Customer Care Knowledge Graph Ingestion
+🔄 Mode: merge (safe)
+🔌 Ensuring Weaviate (Docker) is running...
+🔌 Connecting to Weaviate...
+📊 Loading Customer Care data from /Users/ays/mlds_ha/data/raw/customer_care/splits/part_000.csv
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:230: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+Some weights of the model checkpoint at cardiffnlp/twitter-roberta-base-sentiment-latest were not used when initializing RobertaForSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+- This IS expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Device set to use mps:0
+🧠 Computing sentiment for customer care cases (ensemble)...
+   • Sentiment progress: 1024/100000 (1.0%) | 51.2 rows/s | ETA 32.2 min
+   • Sentiment progress: 11264/100000 (11.3%) | 67.9 rows/s | ETA 21.8 min
+   • Sentiment progress: 21504/100000 (21.5%) | 74.1 rows/s | ETA 17.7 min
+   • Sentiment progress: 31744/100000 (31.7%) | 72.7 rows/s | ETA 15.7 min
+   • Sentiment progress: 41984/100000 (42.0%) | 73.8 rows/s | ETA 13.1 min
+   • Sentiment progress: 52224/100000 (52.2%) | 75.6 rows/s | ETA 10.5 min
+   • Sentiment progress: 62464/100000 (62.5%) | 74.7 rows/s | ETA 8.4 min
+   • Sentiment progress: 72704/100000 (72.7%) | 75.8 rows/s | ETA 6.0 min
+   • Sentiment progress: 82944/100000 (82.9%) | 76.1 rows/s | ETA 3.7 min
+   • Sentiment progress: 93184/100000 (93.2%) | 75.7 rows/s | ETA 1.5 min
+   • Sentiment progress: 100000/100000 (100.0%) | 76.4 rows/s | ETA 0.0 min
+🔍 Extracting Customer Care entities...
+Found: 1 platforms, 0 issue types, 16 channels, 5 priorities
+📱 Added 1 new platforms
+🏷️ All issue types already exist
+📞 Added 16 new channels
+⚡ Added 5 new priorities
+📝 Found 100000 total cases, 100000 are new
+📝 Ingesting Customer Care cases...
+✅ Customer Care knowledge graph ingestion completed!
+/Users/ays/mlds_ha/customer_care/customer_care_ingest.py:230: DtypeWarning: Columns (2,8) have mixed types. Specify dtype option on import or set low_memory=False.
+  return pd.read_csv(file_path)
+✅ Customer Care ingestion completed and logged
+📁 Moved processed file: part_000.csv → data/processed/customer_care/customer_care_dataset_95c3fcb8_20250901_093232/
+📁 Dataset ID: customer_care_dataset_95c3fcb8
+📈 Exporting Customer Care AI-agent metrics...
+📊 Generating Customer Care AI-agent metrics...
+💥 Ingestion failed: 'numpy.float64' object has no attribute 'fillna'
+🔌 Connection closed
+Traceback (most recent call last):
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 529, in <module>
+    main()
+  File "/Users/ays/mlds_ha/customer_care/customer_care_ingest.py", line 518, in main
+    _ = metrics_exporter.export_all_metrics(df, dataset_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ays/mlds_ha/customer_care/customer_care_metrics_export.py", line 86, in export_all_metrics
+    overview = self.generate_dataset_overview(df, dataset_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ays/mlds_ha/customer_care/customer_care_metrics_export.py", line 195, in generate_dataset_overview
+    esc_rate = float(pd.to_numeric(df.get('is_escalated'), errors='coerce').fillna(0).mean()) if len(df) else 0.0
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'numpy.float64' object has no attribute 'fillna'. Did you mean: 'fill'?

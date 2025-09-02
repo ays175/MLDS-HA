@@ -1,0 +1,340 @@
+# Facebook Platform Configuration - COMPLETE
+platform:
+  name: facebook
+  display_name: Facebook
+  type: social
+  description: Facebook social media platform
+
+# Weaviate Collection Names
+collections:
+  platform: FacebookPlatform
+  brand: FacebookBrand
+  content_type: FacebookContentType
+  post: FacebookPost
+
+# Complete Schema Configuration
+schema:
+  # Platform collection fields
+  platform_fields:
+    - name: name
+      type: text
+      description: Platform name
+    - name: type
+      type: text
+      description: Platform type
+    - name: description
+      type: text
+      description: Platform description
+  
+  # Brand collection fields
+  brand_fields:
+    - name: name
+      type: text
+      description: Brand name
+    - name: type
+      type: text
+      description: Brand type
+    - name: platform
+      type: text
+      description: Associated platform
+  
+  # Content type collection fields
+  content_type_fields:
+    - name: name
+      type: text
+      description: Content type name
+    - name: type
+      type: text
+      description: Category type (axis, asset, etc.)
+    - name: platform
+      type: text
+      description: Platform
+  
+  # Post collection fields - COMPLETE LIST
+  fields:
+    # Identity fields
+    - name: profile_id
+      weaviate_name: profile_id
+      type: text
+      description: Profile identifier
+    - name: facebook_profileId
+      weaviate_name: facebook_profileId
+      type: text
+      description: Facebook profile ID
+    - name: facebook_id
+      weaviate_name: facebook_id
+      type: text
+      description: Facebook post ID
+    - name: facebook_url
+      weaviate_name: facebook_url
+      type: text
+      description: Direct link to Facebook post
+    
+    # Timing & type
+    - name: created_time
+      weaviate_name: created_time
+      type: text
+      description: ISO timestamp when created
+    - name: content_type
+      weaviate_name: content_type
+      type: text
+      description: Post content type (post, reel, album, etc.)
+    - name: network
+      weaviate_name: network
+      type: text
+      description: Network name (facebook)
+    - name: facebook_published
+      weaviate_name: facebook_published
+      type: text
+      description: Published flag (TRUE/FALSE)
+    
+    # Content fields (vectorized)
+    - name: facebook_content
+      weaviate_name: facebook_content
+      type: text
+      vectorize: true
+      description: Post text content
+    - name: facebook_post_labels_names
+      weaviate_name: facebook_post_labels_names
+      type: text
+      vectorize: true
+      description: Flattened label names
+    - name: labels_text
+      weaviate_name: labels_text
+      type: text
+      vectorize: true
+      description: Content labels as searchable text
+    - name: content_summary
+      weaviate_name: content_summary
+      type: text
+      vectorize: true
+      description: AI-generated content summary for semantic search
+    
+    # Non-vectorized content fields
+    - name: facebook_post_labels
+      weaviate_name: facebook_post_labels
+      type: text
+      description: Raw labels JSON
+    - name: facebook_attachments
+      weaviate_name: facebook_attachments
+      type: text
+      description: Attachments JSON (title, url, image_url, type)
+    
+    # Sentiment and comments
+    - name: facebook_comments
+      weaviate_name: facebook_comments
+      type: number
+      description: Number of comments
+    - name: facebook_comments_sentiment
+      weaviate_name: facebook_comments_sentiment
+      type: text
+      description: Comments sentiment JSON {positive,neutral,negative}
+    - name: facebook_sentiment
+      weaviate_name: facebook_sentiment
+      type: number
+      description: Aggregate sentiment score if available
+    
+    # Interaction breakdown
+    - name: facebook_interactions
+      weaviate_name: facebook_interactions
+      type: number
+      description: Total interactions
+    - name: facebook_media_type
+      weaviate_name: facebook_media_type
+      type: text
+      description: Media type (photo, video, reel, album)
+    - name: facebook_reactions
+      weaviate_name: facebook_reactions
+      type: number
+      description: Total reactions
+    - name: facebook_shares
+      weaviate_name: facebook_shares
+      type: number
+      description: Share count
+    
+    # Insights metrics
+    - name: facebook_insights_engagements
+      weaviate_name: facebook_insights_engagements
+      type: number
+      description: Insights engagements
+    - name: facebook_insights_impressions
+      weaviate_name: facebook_insights_impressions
+      type: number
+      description: Insights impressions
+    - name: facebook_insights_interactions
+      weaviate_name: facebook_insights_interactions
+      type: number
+      description: Insights interactions
+    - name: facebook_insights_post_clicks
+      weaviate_name: facebook_insights_post_clicks
+      type: number
+      description: Insights post clicks
+    - name: facebook_insights_reach
+      weaviate_name: facebook_insights_reach
+      type: number
+      description: Insights reach
+    - name: facebook_insights_reactions
+      weaviate_name: facebook_insights_reactions
+      type: number
+      description: Insights reactions
+    - name: facebook_insights_video_views
+      weaviate_name: facebook_insights_video_views
+      type: number
+      description: Insights video views
+    - name: facebook_insights_video_views_average_completion
+      weaviate_name: facebook_insights_video_views_average_completion
+      type: number
+      description: Insights video views average completion
+    
+    # Reaction breakdown
+    - name: facebook_reaction_anger
+      weaviate_name: facebook_reaction_anger
+      type: number
+      description: Anger reactions
+    - name: facebook_reaction_haha
+      weaviate_name: facebook_reaction_haha
+      type: number
+      description: Haha reactions
+    - name: facebook_reaction_like
+      weaviate_name: facebook_reaction_like
+      type: number
+      description: Like reactions
+    - name: facebook_reaction_love
+      weaviate_name: facebook_reaction_love
+      type: number
+      description: Love reactions
+    - name: facebook_reaction_sorry
+      weaviate_name: facebook_reaction_sorry
+      type: number
+      description: Sorry reactions
+    - name: facebook_reaction_wow
+      weaviate_name: facebook_reaction_wow
+      type: number
+      description: Wow reactions
+    
+    # Calculated Metrics
+    - name: engagement_rate
+      weaviate_name: engagement_rate
+      type: number
+      description: Engagement rate (%)
+    - name: view_rate
+      weaviate_name: view_rate
+      type: number
+      description: View rate from impressions (%)
+    - name: like_rate
+      weaviate_name: like_rate
+      type: number
+      description: Like rate from impressions (%)
+    - name: share_rate
+      weaviate_name: share_rate
+      type: number
+      description: Share rate from impressions (%)
+    - name: comment_rate
+      weaviate_name: comment_rate
+      type: number
+      description: Comment rate from impressions (%)
+    - name: click_rate
+      weaviate_name: click_rate
+      type: number
+      description: Post click rate from impressions (%)
+    - name: derived_country
+      weaviate_name: derived_country
+      type: text
+      description: Country derived from account handle (@sephora[country])
+    - name: reaction_rate
+      weaviate_name: reaction_rate
+      type: number
+      description: Reaction rate from impressions (%)
+    - name: completion_rate
+      weaviate_name: completion_rate
+      type: number
+      description: Average video completion (%)
+    
+    # Relationships (stored as UUIDs)
+    - name: platform
+      weaviate_name: platform
+      type: text
+      description: Platform UUID
+    - name: brands
+      weaviate_name: brands
+      type: text_array
+      description: Brand UUIDs
+    - name: content_types
+      weaviate_name: content_types
+      type: text_array
+      description: Content type UUIDs
+
+# Entity extraction configuration
+entities:
+  brand_extraction:
+    source_field: facebook_post_labels_names
+    pattern: '\[Brand\]\s*([^,\]]+)'
+    category: brand
+  
+  content_type_extraction:
+    source_field: facebook_post_labels_names
+    pattern: '\[([^\]]+)\]\s*([^,\]]+)'
+    exclude_categories: [brand]
+  
+  country_extraction:
+    source_field: facebook_url
+    target_field: derived_country
+    mapping:
+      "@sephora": "Global"
+      "@sephoracollection": "Global"
+      "@sephorafrance": "France"
+      "@sephoradeutschland": "Germany"
+      "@sephoraitalia": "Italy"
+      "@sephoramiddleeast": "Middle East"
+      "@sephoraspain": "Spain"
+      "@sephoraswitzerland": "Switzerland"
+      "@sephoraczechrepublic": "Czech Republic"
+      "@sephoraportugal": "Portugal"
+      "@sephorapolska": "Poland"
+      "@sephoraturkiye": "Turkey"
+      "@sephoragreece": "Greece"
+      "@sephorauk": "United Kingdom"
+      "@sephorabulgaria": "Bulgaria"
+      "@sephoraromania": "Romania"
+      "@sephorasrbija": "Serbia"
+      "@sephoracanada": "Canada"
+      "@sephorasg": "Singapore"
+
+# Data processing configuration
+processing:
+  text_fields_for_sanitization:
+    - facebook_content
+    - facebook_post_labels_names
+  
+  sentiment_analysis:
+    enabled: true
+    text_field: facebook_content
+    fallback_field: content_summary
+    target_field: facebook_sentiment
+    batch_size: 64
+  
+  content_enrichment:
+    generate_summary: true
+    extract_themes: true
+    extract_labels: true
+    extract_attachments: true
+
+# Ingestion tracking
+tracking:
+  log_file: data/facebook_ingestion_log.json
+  hash_algorithm: sha256
+  hash_length: 16
+
+# Metrics export configuration
+# Semantic Analysis Configuration
+semantic_analysis:
+  enabled: true
+  min_documents: 100        # Lower threshold for richer topics
+  max_topics: 75           # Increase from 50 for content diversity
+  topic_quality_threshold: 0.2  # Lower for initial exploration
+  sample_size: 200000      # Use full dataset for Facebook (100k+ records) 
+
+# Metrics Export Configuration
+metrics:
+  exporter_class: facebook.facebook_metrics_export.FacebookMetricsExporter
+  output_dir: metrics/facebook
