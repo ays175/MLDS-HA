@@ -264,17 +264,19 @@ schema:
 # Entity extraction configuration
 entities:
   brand_extraction:
-    source_field: tiktok_post_labels_names
+    source_field: tiktok_post_labels
+    fallback_field: tiktok_post_labels_names
     pattern: '\[Brand\]\s*([^,\]]+)'
     category: brand
   
   content_type_extraction:
-    source_field: tiktok_post_labels_names
+    source_field: tiktok_post_labels
+    fallback_field: tiktok_post_labels_names
     pattern: '\[([^\]]+)\]\s*([^,\]]+)'
     exclude_categories: [brand]
   
   country_extraction:
-    source_field: tiktok_url
+    source_field: tiktok_link
     target_field: derived_country
     mapping:
       "@sephora": "Global"
@@ -293,9 +295,11 @@ entities:
       "@sephorauk": "United Kingdom"
       "@sephorabulgaria": "Bulgaria"
       "@sephoraromania": "Romania"
+      "@sephora.romania": "Romania"
       "@sephorasrbija": "Serbia"
       "@sephoracanada": "Canada"
       "@sephorasg": "Singapore"
+      "@sephora_scandinavia": "Scandinavia"
   
   duration_ranges:
     - name: "0-15s"

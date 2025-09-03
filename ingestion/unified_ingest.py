@@ -735,6 +735,9 @@ class UnifiedIngestionEngine:
                 elif isinstance(value, (pd.Series, pd.DataFrame)):
                     # Skip complex pandas objects
                     continue
+                # Ensure ID fields are strings (critical for Weaviate)
+                if col in ['tiktok_id', 'facebook_id', 'instagram_id', 'customer_care_id']:
+                    value = str(value)
                 
                 record_data[col] = value
             except (ValueError, TypeError, AttributeError):

@@ -44,6 +44,10 @@ class UnifiedEntityExtractor:
         if 'content_type_extraction' in entity_config:
             entities['content_types'] = self._extract_content_types(df, entity_config['content_type_extraction'])
         
+        # Extract countries (add derived_country to dataframe)
+        if 'country_extraction' in entity_config:
+            self._extract_countries(df, entity_config['country_extraction'])
+        
         # Platform-specific entities
         if self.platform == 'tiktok' and 'duration_ranges' in entity_config:
             entities['duration_ranges'] = entity_config['duration_ranges']
@@ -70,9 +74,24 @@ class UnifiedEntityExtractor:
             # Single field pattern extraction (social platforms)
             pattern = config['pattern']
             field = config['source_field']
+            fallback_field = config.get('fallback_field')
             
+            # Try structured field first (e.g., tiktok_post_labels)
             if field in df.columns:
                 for text in df[field].dropna():
+                    text_str = str(text)
+                    if field == 'tiktok_post_labels':
+                        # Use improved JSON parsing for structured labels
+                        extracted_brands = self._parse_tiktok_labels_for_brands(text_str)
+                        brands.update(extracted_brands)
+                    else:
+                        # Use regex pattern for other fields
+                        matches = re.findall(pattern, text_str)
+                        brands.update(matches)
+            
+            # Fallback to secondary field if no brands found
+            if not brands and fallback_field and fallback_field in df.columns:
+                for text in df[fallback_field].dropna():
                     matches = re.findall(pattern, str(text))
                     brands.update(matches)
         
@@ -102,10 +121,48 @@ class UnifiedEntityExtractor:
         if 'source_field' in config:
             pattern = config['pattern']
             field = config['source_field']
+            fallback_field = config.get('fallback_field')
             exclude = config.get('exclude_categories', [])
             
+            # Try structured field first (e.g., tiktok_post_labels)
             if field in df.columns:
                 for text in df[field].dropna():
+                    text_str = str(text)
+                    if field == 'tiktok_post_labels':
+                        # Use improved JSON parsing for structured labels
+                        extracted_content = self._parse_tiktok_labels_for_content(text_str)
+                        for content_info in extracted_content:
+                            category = content_info.get('category', 'content')
+                            name = content_info.get('type', 'Unknown')
+                            
+                            if category.lower() not in [e.lower() for e in exclude]:
+                                key = f"{category}::{name}"
+                                content_types[key] = {
+                                    'name': name,
+                                    'type': category,
+                                    'category': category
+                                }
+                    else:
+                        # Use regex pattern for other fields
+                        matches = re.findall(pattern, text_str)
+                        for match in matches:
+                            if isinstance(match, tuple) and len(match) >= 2:
+                                category, name = match[0], match[1]
+                            else:
+                                # Handle single capture group
+                                category = config.get('default_category', 'content')
+                                name = match
+                            
+                                key = f"{category}::{name}"
+                                content_types[key] = {
+                                    'name': name,
+                                    'type': category,
+                                    'category': category
+                                }
+            
+            # Fallback to secondary field if no content types found
+            if not content_types and fallback_field and fallback_field in df.columns:
+                for text in df[fallback_field].dropna():
                     matches = re.findall(pattern, str(text))
                     for match in matches:
                         if isinstance(match, tuple) and len(match) >= 2:
@@ -116,14 +173,97 @@ class UnifiedEntityExtractor:
                             name = match
                         
                         if category.lower() not in [e.lower() for e in exclude]:
-                            key = (category, name)
+                            key = f"{category}::{name}"
                             content_types[key] = {
                                 'name': name,
                                 'type': category,
-                                'platform': self.config['platform']['display_name']
+                                'category': category
                             }
         
         return list(content_types.values())
+    
+    def _parse_tiktok_labels_for_brands(self, labels_json: str) -> List[str]:
+        """Parse tiktok_post_labels JSON field to extract brands"""
+        import json
+        import re
+        
+        brands = []
+        
+        try:
+            # Handle multiple JSON objects separated by commas
+            if labels_json.strip() and not labels_json.strip().startswith('['):
+                # Use regex to find JSON object boundaries
+                pattern = r'\{[^{}]*\}'
+                matches = re.findall(pattern, labels_json)
+                
+                for match in matches:
+                    try:
+                        obj = json.loads(match)
+                        if isinstance(obj, dict) and 'name' in obj:
+                            name = obj['name'].strip()
+                            if '[Brand]' in name:
+                                brand = name.replace('[Brand]', '').strip()
+                                if brand:
+                                    brands.append(brand)
+                    except json.JSONDecodeError:
+                        continue
+            
+        except Exception as e:
+            # Fallback: treat as string and parse manually
+            if '[Brand]' in labels_json:
+                parts = labels_json.split('[Brand]')
+                for part in parts[1:]:  # Skip first part (before first [Brand])
+                    # Extract text until next bracket or comma
+                    brand_match = re.search(r'^([^,\[\]]+)', part)
+                    if brand_match:
+                        brand = brand_match.group(1).strip().strip('"').strip()
+                        if brand:
+                            brands.append(brand)
+        
+        return brands
+    
+    def _parse_tiktok_labels_for_content(self, labels_json: str) -> List[Dict[str, str]]:
+        """Parse tiktok_post_labels JSON field to extract content types"""
+        import json
+        import re
+        
+        content_types = []
+        
+        try:
+            # Handle multiple JSON objects separated by commas
+            if labels_json.strip() and not labels_json.strip().startswith('['):
+                # Use regex to find JSON object boundaries
+                pattern = r'\{[^{}]*\}'
+                matches = re.findall(pattern, labels_json)
+                
+                for match in matches:
+                    try:
+                        obj = json.loads(match)
+                        if isinstance(obj, dict) and 'name' in obj:
+                            name = obj['name'].strip()
+                            
+                            # Extract content types
+                            for tag, category in [('[Axis]', 'axis'), ('[Asset]', 'asset'), ('[Package M]', 'package')]:
+                                if tag in name:
+                                    content_name = name.replace(tag, '').strip()
+                                    if content_name:
+                                        content_types.append({'type': content_name, 'category': category})
+                    except json.JSONDecodeError:
+                        continue
+            
+        except Exception as e:
+            # Fallback: treat as string and parse manually
+            for tag, category in [('[Axis]', 'axis'), ('[Asset]', 'asset'), ('[Package M]', 'package')]:
+                if tag in labels_json:
+                    parts = labels_json.split(tag)
+                    for part in parts[1:]:
+                        content_match = re.search(r'^([^,\[\]]+)', part)
+                        if content_match:
+                            content_name = content_match.group(1).strip().strip('"').strip()
+                            if content_name:
+                                content_types.append({'type': content_name, 'category': category})
+        
+        return content_types
     
     def _extract_customer_care_entities(self, df: pd.DataFrame) -> Dict[str, List[Dict[str, Any]]]:
         """Extract customer care specific entities"""
@@ -475,6 +615,41 @@ class UnifiedEntityExtractor:
             'text_length': len(text),
             'has_resolution': pd.notna(row.get('resolution'))
         }
+    
+    def _extract_countries(self, df: pd.DataFrame, country_config: Dict[str, Any]) -> None:
+        """Extract countries from URLs and add derived_country column to dataframe"""
+        source_field = country_config.get('source_field')
+        target_field = country_config.get('target_field', 'derived_country')
+        mapping = country_config.get('mapping', {})
+        
+        if source_field not in df.columns:
+            print(f"⚠️ Country extraction: source field '{source_field}' not found")
+            df[target_field] = None
+            return
+        
+        def extract_country_from_url(url):
+            """Extract country from URL using handle mapping"""
+            if pd.isna(url) or not isinstance(url, str):
+                return None
+            
+            # Extract handle from URL (e.g., @sephorafrance from tiktok.com/@sephorafrance/video/...)
+            if '/@' in url:
+                handle = '@' + url.split('/@')[1].split('/')[0]
+                return mapping.get(handle, None)
+            
+            return None
+        
+        # Apply country extraction
+        df[target_field] = df[source_field].apply(extract_country_from_url)
+        
+        # Log results
+        country_counts = df[target_field].value_counts()
+        print(f"✅ Country extraction completed:")
+        for country, count in country_counts.items():
+            print(f"   {country}: {count} posts")
+        
+        if df[target_field].isna().sum() > 0:
+            print(f"   Unknown: {df[target_field].isna().sum()} posts")
 
 
 # Convenience functions for backward compatibility
